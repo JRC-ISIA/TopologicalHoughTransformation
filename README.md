@@ -54,8 +54,6 @@ python experiments/experiment_1.py --output_directory results --noise_levels 0.1
 │   ├── utils/                  # Utility functions
 │   ├── TopologicalHoughTransform.py  # Main class
 ├── utils/                      # Additional utilities
-├── common/                     # Shared resources (e.g., colors)
-├── results/                    # Output directory for results
 └── README.md                   # Project documentation
 ```
 
@@ -101,7 +99,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 In case you think this project is useful for your work, please cite it as follows:
 
 ```
-@online{ferner2025a,
+@online{ferner2025,
   title = {Persistence-Based {{Hough Transform}} for {{Line Detection}}},
   author = {Ferner, Johannes and Huber, Stefan and Messineo, Saverio and Pop, Angel and Uray, Martin},
   date = {2025-05-22},
