@@ -1,4 +1,11 @@
-# Hogh Transformation for Lines. Line in original Picture -> Point after Transformation
+"""
+TopologicalHoughTransform.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: 2025-06-04
+Description: Topological Hough Transform implementation using the superlevel-set
+  filtration with persistence homology.
+License: MIT
+"""
 import logging
 
 import numpy as np
