@@ -87,7 +87,7 @@ class TopologicalHoughTransform(object):
             for t_idx in range(num_thetas):
 
                 # Calculate rho. diag_len is added for a positive index
-                rho = diag_len + np.round(x * cos_t[t_idx] + y * sin_t[t_idx])
+                rho = int(diag_len + np.round(x * cos_t[t_idx] + y * sin_t[t_idx]))
 
                 if self.three_periods:
                     self.hough_image[-rho, t_idx] += 1

@@ -7,7 +7,7 @@ import numpy as np
 import seaborn as sns
 
 from utils.baseline_hough_transform import baseline_detect_lines
-from topologicalhoughtransform.HoughforPoints import TopologicalHoughTransform
+from topologicalhoughtransform.TopologicalHoughTransform import TopologicalHoughTransform
 
 from utils.plotting import draw_lines_on_image
 from utils.test_data_generator import (generate_image, generate_hough_line)

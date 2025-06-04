@@ -62,7 +62,7 @@ def persistence(im, persistence_neighborship_construction=None):
         ni = [uf[q] for q in iter_neighbors(p, w, h, neighborship_construction=persistence_neighborship_construction) if q in uf]
 
         # Sort by (value, index) as key. Note that this is the same sorting
-        # order as for indices. Otherwise we have an inconsistence notion of
+        # order as for indices. Otherwise, we have an inconsistency notion of
         # the "older" component!
         nc = sorted([(get_comp_birth(q), q) for q in set(ni)], reverse=True)
 
