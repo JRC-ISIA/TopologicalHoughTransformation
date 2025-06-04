@@ -3,8 +3,8 @@ import logging
 import numpy as np
 from matplotlib import pyplot as plt
 
-from common.colors import baseline_color_str
-from common.colors import cmap_s, pth_color_str
+from utils.colors import baseline_color_str
+from utils.colors import cmap_s, pth_color_str
 
 from matplotlib.lines import Line2D
 

@@ -6,7 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from common.colors import pth_color
+from utils.colors import pth_color
 from topologicalhoughtransform.utils.math import line_to_pts
 from utils.io import load_wireframe_data
 from utils.plotting import display_image_with_wireframe_and_pointlines

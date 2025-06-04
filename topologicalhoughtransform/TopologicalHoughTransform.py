@@ -28,7 +28,10 @@ class TopologicalHoughTransform(object):
         self.lines = []
         self.line_coordinates = []
 
-        self._do_transform(normalize)
+        self._hough_transform(normalize)
+
+        # TODO: change this to use the find_peaks library, when the neighborhood
+        #  construction is implemented/pull request is accepted
         self.g0 = persistence(np.array(self.hough_image),
                               persistence_neighborship_construction=moebius_neighborship_construction)
         self._search_lines()
@@ -53,12 +56,12 @@ class TopologicalHoughTransform(object):
             for rho_index, theta_index in self.lines
         ]
 
-    def _do_transform(self, normalize = True):
+    def _hough_transform(self, normalize = True):
         """Perform the Hough transformation on the image."""
         width, height = self.img.shape
         diag_len = int(np.hypot(width, height))
 
-        # Rho and Theta ranges
+        # define Rho and Theta ranges
         self.thetas = np.deg2rad(np.linspace(-90.0, 90.0, int(180 / self.angle_step)))
         self.rhos = np.linspace(-diag_len, diag_len, len(self.thetas))
 
@@ -67,24 +70,26 @@ class TopologicalHoughTransform(object):
         sin_t = np.sin(self.thetas)
         num_thetas = len(self.thetas)
 
-        # Hough accumulator array of theta vs rho
+        # setup Hough accumulator array of theta vs rho
         if self.three_periods:
             self.hough_image = np.zeros((2 * diag_len, 3 * num_thetas), dtype=np.uint8)
         else:
             self.hough_image = np.zeros((2 * diag_len, num_thetas), dtype=np.uint8)
-        # (row, col) indexes to edges
+
+        # threshold image on value for b/w image
         are_edges = self.img > self.value_threshold if self.lines_are_white else self.img < self.value_threshold
+
+        # get (y, x) coordinates of all non-zero pixels
         y_idxs, x_idxs = np.nonzero(are_edges)
 
-        # Vote in the hough accumulator
-        for i in range(len(x_idxs)):
-            x = x_idxs[i]
-            y = y_idxs[i]
-
+        # vote in the hough accumulator array
+        for (x, y) in zip(x_idxs, y_idxs):
             for t_idx in range(num_thetas):
+
                 # Calculate rho. diag_len is added for a positive index
-                rho = diag_len + int(round(x * cos_t[t_idx] + y * sin_t[t_idx]))
-                if self.three_periods == True:
+                rho = diag_len + np.round(x * cos_t[t_idx] + y * sin_t[t_idx])
+
+                if self.three_periods:
                     self.hough_image[-rho, t_idx] += 1
                     self.hough_image[rho, num_thetas + t_idx] += 1
                     self.hough_image[-rho, 2 * num_thetas + t_idx] += 1
@@ -97,6 +102,7 @@ class TopologicalHoughTransform(object):
 
 
     def get_persistence_array(self):
+        """Get the persistence array from the Hough transformation."""
         persistence_values = []
         for (p_birth, bl, pers, _) in self.g0:
             if self.three_periods:
@@ -111,80 +117,47 @@ class TopologicalHoughTransform(object):
         return persistence_values
 
     def _search_lines(self):
-        found_lines = []
-        for homclass in self.g0:
-            p_birth, bl, pers, p_death = homclass
-            if pers <= self.pers_limit:
-                continue
-            y, x = p_birth
-            found_lines.append((y, x))
+        """Search for lines in the Hough transformed image based on persistence values."""
+        self.lines = [
+            birth for birth, _, pers, _ in self.g0 if pers > self.pers_limit
+        ]
 
         if self.three_periods:
-            corrected_found_lines = []
-            for (y, x) in found_lines:
-                logging.debug(f'Birth Locus: x={x}, y={y}')
-                x = x - 180
-                if 0 <= x <= 180:
-                    # In Originalperiode gefunden
-                    logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
-                    corrected_found_lines.append((y, x))
-                elif -45 <= x < 0:
-                    y = -y + self.hough_image.shape[0]
-                    x += 180
-                    logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
-                elif 180 < x <= 225:
-                    y = - y + self.hough_image.shape[0]
-                    x -= 180
-                    logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
-            found_lines = corrected_found_lines
-        self.lines = found_lines
-
+            # remove reduncandy of the lines and bring them into the original
+            # period
+            self.lines = [(y, x - 180) for (y, x) in self.lines if 0 <= x - 180 <= 180]
 
 
     def _calc_line_list(self):
-        for i, p_birth in enumerate(self.lines):
-            y, x = p_birth
-            logging.debug(f'Transformierte Koordinaten: x: {x}, y: {y}')
+        for y, x in self.lines:
 
-            # Theta und Rho auf originalskala umrechnen
+            # Theta und Rho to original coordinates
             x = (90 - x)
             y = (y - self.hough_image.shape[0] / 2)
-            logging.debug(f'Korrigierte Koordinaten: x: {x}, y: {y}')
 
-            # Inverstransformation
+            # inverse transformation
             k, d = rho_theta_to_slope_intercept(x, y)
-            logging.debug(f'Linie: k={k}, d={d}')
+            d, k = d * -1, k * -1  # mirror the line
 
-            # An gespiegeltes Bild anpassen
-            d = d * -1
-            k = k * -1
-
-            # Linie Rechnen
-            x1 = np.arange(0, self.img.shape[1])
-            senkrecht = False
+            # calculate line
+            x_c = np.arange(0, self.img.shape[1])
+            vertical = False
             if k == float('inf') or k == float('-inf'):
-                senkrecht = True
+                x_coords = [d] * self.img.shape[0]
+                # if line vertical, use all y values
+                y_coords = list(range(self.img.shape[0]))
             else:
-                y1 = (k * x1 + d)
+                y_c = (k * x_c + d)
+                # remove everything that is not in the image
+                x_coords, y_coords = zip(*[
+                    (xi, yi) for xi, yi in zip(x_c, y_c)
+                    if 0 <= yi < self.img.shape[0] and xi > 0
+                ])
 
-            # Was ausserhalb des Bildes is wegschmeissen
-            x1_filtered = []
-            y1_filtered = []
-            if not senkrecht:
-                for xi, yi in zip(x1, y1):
-                    if self.img.shape[0] >= yi >= 0 and xi > 0:
-                        x1_filtered.append(xi)
-                        y1_filtered.append(yi)
-            else:
-                # Ungültige Linien ausblenden
-                for j in range(self.img.shape[0]):
-                    x1_filtered.append(d)
-                    y1_filtered.append(j)
-            line = [x1_filtered, y1_filtered]
-            self.line_coordinates.append(line)
+            self.line_coordinates.append([x_coords, y_coords])
 
 
-def moebius_neighborship_construction(p, w, h, **kwargs):
+def moebius_neighborship_construction(p, w, h):
     logging.debug("Moebius strip construction is used, which may not be "
                   "suitable for all applications.")
     y, x = p

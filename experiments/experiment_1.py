@@ -1,5 +1,4 @@
 import logging
-import math
 import os
 import random
 
@@ -7,19 +6,18 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from topologicalhoughtransform.utils.plotting import plot_persistence_diagram
-from utils.baseline_hough_transform import baseline_detect_lines
-from topologicalhoughtransform.TopologicalHoughTransform import TopologicalHoughTransform
-from utils.test_data_generator import (generate_image, generate_line)
-from common.colors import pth_color
+from topologicalhoughtransform.TopologicalHoughTransform import \
+    TopologicalHoughTransform
 from topologicalhoughtransform.utils.eval import get_conf_matrix
 from topologicalhoughtransform.utils.math import slope_intercept_to_rho_theta, \
     line_to_pts
-
+from topologicalhoughtransform.utils.plotting import plot_persistence_diagram
+from utils.baseline_hough_transform import baseline_detect_lines
+from utils.colors import pth_color
+from utils.parser import create_parser
 from utils.plotting import draw_dashed_line, draw_lines_on_image, \
     plot_hough_with_loci
-from utils.parser import create_parser
-
+from utils.test_data_generator import (generate_image, generate_line)
 
 if __name__ == '__main__':
     parser = create_parser()
