@@ -139,11 +139,11 @@ class TopologicalHoughTransform(object):
         for y, x in self.lines:
 
             # Theta und Rho to original coordinates
-            x = (90 - x)
-            y = (y - self.hough_image.shape[0] / 2)
+            theta = (90 - x)
+            rho = (y - self.hough_image.shape[0] / 2)
 
             # inverse transformation
-            k, d = rho_theta_to_slope_intercept(x, y)
+            k, d = rho_theta_to_slope_intercept(rho, theta)
             d, k = d * -1, k * -1  # mirror the line
 
             # calculate line
