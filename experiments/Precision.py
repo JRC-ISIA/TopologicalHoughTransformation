@@ -11,8 +11,7 @@ from topologicalhoughtransform.TopologicalHoughTransform import TopologicalHough
 
 from utils.plotting import draw_lines_on_image
 from utils.test_data_generator import (generate_image, generate_hough_line)
-from topologicalhoughtransform.utils.eval import find_closest_line, \
-    find_closest_line_ph
+from topologicalhoughtransform.utils.eval import find_closest_line
 
 if __name__ == '__main__':
     filenames = []  # used to store the plots for gif generation
@@ -75,7 +74,7 @@ if __name__ == '__main__':
                 cumulative_rho_diffs['BL'].append(abs(true_line[0] - found_rho))
                 cumulative_theta_diffs['BL'].append(abs(true_line[1] - found_theta))
 
-            closest_PH_line = find_closest_line_ph(true_line, transformed_lines)
+            closest_PH_line = find_closest_line(true_line, transformed_lines)
             if closest_PH_line:
                 found_rho, found_theta = closest_PH_line
                 cumulative_rho_diffs['PH'].append(abs(true_line[0] - found_rho))

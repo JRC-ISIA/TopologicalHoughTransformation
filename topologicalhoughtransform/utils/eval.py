@@ -39,29 +39,18 @@ def find_closest_line(true_line, detected_lines):
     """Finds the detected line closest to the true line based on rho and theta."""
     min_diff = float('inf')
     closest_line = None
+
     for line in detected_lines:
         if isinstance(line, np.ndarray):  # If the line is a numpy array typically from OpenCV
             line = line.flatten()  # Flatten in case it's multi-dimensional
-            found_rho, found_theta = line[0], line[1]
+            rho, theta = line[0], line[1]
         else:
-            found_rho, found_theta = line
+            rho, theta = line
+
         # Calculate the difference and update the closest line if it's smaller
-        diff = abs(true_line[0] - found_rho) + abs(true_line[1] - found_theta)
+        diff = abs(true_line[0] - rho) + abs(true_line[1] - theta)
         if diff < min_diff:
             min_diff = diff
-            closest_line = (found_rho, found_theta)
-    return closest_line
+            closest_line = (rho, theta)
 
-
-def find_closest_line_ph(true_line, detected_lines):
-    """Finds the detected line closest to the true line based on rho and theta."""
-    min_diff = float('inf')
-    closest_line = None
-    for line in detected_lines:
-        found_rho, found_theta = line
-        # Calculate the difference and update the closest line if it's smaller
-        diff = abs(true_line[0] - found_rho) + abs(true_line[1] - found_theta)
-        if diff < min_diff:
-            min_diff = diff
-            closest_line = (found_rho, found_theta)
     return closest_line
