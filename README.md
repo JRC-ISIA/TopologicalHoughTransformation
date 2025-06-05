@@ -11,11 +11,19 @@ This project implements a **Topological Hough Transform** for detecting lines in
 - **Evaluation**: Generate confusion matrices to compare detection methods.
 
 ## Installation
+The easiest way to install the library is using `pip`:
+
+```bash
+pip install topological-hough-transform
+```
+
+### Using Github
+An alternative is to use the libraries sources. For this you need to have `git` installed on your system. Follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
+   git clone git@github.com:JRC-ISIA/TopologicalHoughTransformation.git
+   cd TopologicalHoughTransformation
    ```
 
 2. Install dependencies:
@@ -23,48 +31,7 @@ This project implements a **Topological Hough Transform** for detecting lines in
    pip install -r requirements.txt
    ```
 
-## Usage
-
-### Running Experiments
-Run the main experiment script:
-```bash
-python experiments/experiment_1.py --output_directory results --log_level INFO
-```
-
-### Arguments
-- `--output_directory`: Directory to save results.
-- `--log_level`: Logging level (e.g., `INFO`, `DEBUG`).
-- Additional arguments can be found in the `create_parser` function in `utils/parser.py`.
-
-### Example
-```bash
-python experiments/experiment_1.py --output_directory results --noise_levels 0.1 0.2 0.3 --num_sim_rounds 10
-```
-
-### Visualizing Results
-- Persistence diagrams and Hough spaces are saved in the `results/tmp` directory.
-- Use the `utils/plotting.py` module to customize visualizations.
-
-## Project Structure
-
-```
-.
-├── experiments/                # Experiment scripts
-├── topologicalhoughtransform/  # Core implementation
-│   ├── utils/                  # Utility functions
-│   ├── TopologicalHoughTransform.py  # Main class
-├── utils/                      # Additional utilities
-└── README.md                   # Project documentation
-```
-
-## Key Modules
-
-- **`TopologicalHoughTransform`**: Implements the topological Hough transform.
-- **`utils/plotting.py`**: Functions for visualizing results.
-- **`utils/test_data_generator.py`**: Generate synthetic data for testing.
-- **`utils/parser.py`**: Command-line argument parser.
-
-## Examples
+## Using the library module: Examples
 
 ### Generating a Persistence Diagram
 ```python
@@ -84,6 +51,25 @@ accumulator, thetas, rhos = hough_line(image)
 show_hough_line(image, accumulator, thetas, rhos)
 ```
 
+## Usage of Experiments
+
+### Running Experiments
+Run the main experiments, as described in the initial publication [1] using:
+```bash
+python experiments/experiment_1.py --output_directory results --log_level INFO
+```
+
+### Arguments
+- `--output_directory`: Directory to save results.
+- `--log_level`: Logging level (e.g., `INFO`, `DEBUG`).
+- Additional arguments can be found in the `create_parser` function in `utils/parser.py`.
+
+### Example
+```bash
+python experiments/experiment_1.py --output_directory results --noise_levels 0.1 0.2 0.3 --num_sim_rounds 10
+```
+
+
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
@@ -98,7 +84,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ## Cite
 In case you think this project is useful for your work, please cite it as follows:
 
-```
+```bibtex
 @online{ferner2025,
   title = {Persistence-Based {{Hough Transform}} for {{Line Detection}}},
   author = {Ferner, Johannes and Huber, Stefan and Messineo, Saverio and Pop, Angel and Uray, Martin},
