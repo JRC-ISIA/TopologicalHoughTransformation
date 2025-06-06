@@ -143,7 +143,7 @@ class TopologicalHoughTransform(object):
             rho = (y - self.hough_image.shape[0] / 2)
 
             # inverse transformation
-            k, d = rho_theta_to_slope_intercept(rho, theta)
+            k, d = rho_theta_to_slope_intercept((rho, theta))
             d, k = d * -1, k * -1  # mirror the line
 
             # calculate line

@@ -41,8 +41,8 @@ if __name__ == '__main__':
         for sim_run in range(0, args.num_sim_rounds):
             logging.info(f"Noiselvl: {noise_level}, run:{sim_run}\n")
             offset = random.randint(50, 100)
-            rho1, theta1 = slope_intercept_to_rho_theta(args.line_1_slope, args.line_1_intercept + offset)
-            rho2, theta2 = slope_intercept_to_rho_theta(args.line_2_slope, args.line_2_intercept - offset)
+            rho1, theta1 = slope_intercept_to_rho_theta((args.line_1_slope, args.line_1_intercept + offset))
+            rho2, theta2 = slope_intercept_to_rho_theta((args.line_2_slope, args.line_2_intercept - offset))
             true_lines = [(rho1, theta1), (rho2, theta2)]
             logging.debug(f"True line coordinates: {true_lines}")
 
