@@ -47,14 +47,14 @@ def rho_theta_to_slope_intercept(line):
     cos_theta = np.cos(theta_rad)
     sin_theta = np.sin(theta_rad)
 
-    if np.abs(sin_theta) > 1e-8:
-        k = -cos_theta / sin_theta
-        d = rho / sin_theta
-    else:
+    if np.isclose(sin_theta, 0, atol=1e-9):
         # if sin_theta is close to 0, the line is vertical and we handle it
         # separately
         k = float('inf') if cos_theta > 0 else -float('inf')
         d = -np.abs(rho) if k > 0 else np.abs(rho)
+    else:
+        k = -cos_theta / sin_theta
+        d = rho / sin_theta
 
     return k, d
 

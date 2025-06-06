@@ -65,4 +65,21 @@ def create_parser():
         help="Threshold for OpenCV line detection (default: 45)."
     )
 
+    image_group = parser.add_argument_group("Image Configuration")
+    image_group.add_argument(
+        "--image-width",
+        type=int,
+        default=256,
+        help="Width of the generated image (default: 256)."
+    )
+
+    image_group.add_argument(
+        "--image-height",
+        type=int,
+        default=256,
+        help="Height of the generated image (default: 256)."
+    )
+
+    # num_points = 100
+
     return parser
