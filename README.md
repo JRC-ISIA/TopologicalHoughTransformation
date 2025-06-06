@@ -43,28 +43,26 @@ hough_transformer = TopologicalHoughTransform(image, value_threshold=150, pers_l
 plot_persistence_diagram(hough_transformer)
 ```
 
-### Visualizing Hough Space
-```python
-from unsure.utils import hough_line, show_hough_line
-
-accumulator, thetas, rhos = hough_line(image)
-show_hough_line(image, accumulator, thetas, rhos)
-```
-
-## Usage of Experiments
-
-### Running Experiments
-Run the main experiments, as described in the initial publication [1] using:
+### Usage of Experiments
+The experiments shall also be used as a reference on how to use the library 
+module. The experiments are located in the `experiments` folder and can be run 
+directly. Run the main experiments, as described in the initial publication [1] 
+using:
 ```bash
 python experiments/experiment_1.py --output_directory results --log_level INFO
 ```
 
-### Arguments
+#### Arguments
 - `--output_directory`: Directory to save results.
 - `--log_level`: Logging level (e.g., `INFO`, `DEBUG`).
-- Additional arguments can be found in the `create_parser` function in `utils/parser.py`.
+- Additional arguments can be found in the `create_parser` function in `utils/parser.py` and are listed using
+```bash
+python experiments/experiment_1.py --help
+```
 
-### Example
+The same applies also to the other experiments.
+
+#### Example
 ```bash
 python experiments/experiment_1.py --output_directory results --noise_levels 0.1 0.2 0.3 --num_sim_rounds 10
 ```
