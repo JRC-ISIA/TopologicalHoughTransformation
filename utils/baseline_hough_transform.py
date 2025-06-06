@@ -11,8 +11,7 @@ from utils.io import load_wireframe_data
 from utils.plotting import display_image_with_wireframe_and_pointlines
 
 
-def baseline_detect_lines(original_image, edges,
-                          threshold=150, save_output=False):
+def baseline_detect_lines(original_image, edges, threshold=150):
     """
     Detects lines in an image using the Hough Transform and optionally saves
     the output.
@@ -22,8 +21,7 @@ def baseline_detect_lines(original_image, edges,
     - edges: The edge-detected image.
     - theta: Angular resolution in radians of the Hough grid.
     - threshold: Minimum number of votes (intersections in a Hough grid cell).
-    - save_output: Boolean indicating whether to save the output image as a JPG
-                   file.
+
     Returns:
     - lines_found: The image with detected lines overlaid.
     - lines: The lines found by the Hough Transform as a numpy array containing
@@ -51,9 +49,6 @@ def baseline_detect_lines(original_image, edges,
     lines_found = cv2.addWeighted(original_image, 0.8,
                                   accumulator_array, 1, 0)
 
-    if save_output:
-        cv2.imwrite('FoundLines.jpg', lines_found)
-
     return lines_found, lines_p
 
 
@@ -62,13 +57,13 @@ if __name__ == '__main__':
     os.makedirs(out_dir, exist_ok=True)
 
     # Display Labeled Image.
-    file_path = 'TestImages/00030043.pkl'
-    data = load_wireframe_data(file_path)
+    file_name = 'data/baseline_test'
+    data = load_wireframe_data(f'{file_name}.pkl')
     ground_truth = display_image_with_wireframe_and_pointlines(data)
     cv2.imwrite(os.path.join(out_dir, '01_GroundTruth.jpg'), ground_truth)
 
     # Use Edge Detection on the Image.
-    img_original = cv2.imread('TestImages/00030043.jpg')
+    img_original = cv2.imread(f'{file_name}.jpg')
     img = cv2.cvtColor(img_original, cv2.COLOR_BGR2RGB)
     edges = cv2.Canny(img, 10, 150)
     plt.imshow(edges)
@@ -76,8 +71,7 @@ if __name__ == '__main__':
     plt.savefig(os.path.join(out_dir, '02_EdgeDetection.jpg'))
 
     # Baseline
-    lines_found, lines = baseline_detect_lines(img_original, edges,
-                                               save_output=True)
+    lines_found, lines = baseline_detect_lines(img_original, edges)
 
     plt.imshow(cv2.cvtColor(lines_found, cv2.COLOR_BGR2RGB))
     plt.title('Detected Lines (Baseline Model)')
