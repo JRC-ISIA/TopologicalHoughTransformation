@@ -71,7 +71,7 @@ if __name__ == '__main__':
             img_with_lines_PH = draw_lines_on_image(hough_transformer)
 
             img_with_lines, lines = baseline_detect_lines(
-                original_image=original_image, edges=edges,
+                original_image=original_image, img_edges=edges,
                 threshold=args.opencv_threshold)
 
             for line in lines:

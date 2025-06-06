@@ -11,7 +11,7 @@ from utils.io import load_wireframe_data
 from utils.plotting import display_image_with_wireframe_and_pointlines
 
 
-def baseline_detect_lines(original_image, edges, threshold=150):
+def baseline_detect_lines(original_image, img_edges, threshold=150):
     """
     Detects lines in an image using the Hough Transform and optionally saves
     the output.
@@ -36,7 +36,7 @@ def baseline_detect_lines(original_image, edges, threshold=150):
     accumulator_array = np.zeros_like(original_image)
 
     # Detect lines using the Hough Transform
-    lines_p = cv2.HoughLines(edges, 1, np.pi / 180, threshold)
+    lines_p = cv2.HoughLines(img_edges, 1, np.pi / 180, threshold)
     if lines_p is None:
         logging.debug("No lines were detected.")
         lines_p = []
@@ -46,10 +46,10 @@ def baseline_detect_lines(original_image, edges, threshold=150):
         cv2.line(accumulator_array, pt1, pt2, pth_color, 2)
 
     # Combine the original image with the line image
-    lines_found = cv2.addWeighted(original_image, 0.8,
+    found_lines = cv2.addWeighted(original_image, 0.8,
                                   accumulator_array, 1, 0)
 
-    return lines_found, lines_p
+    return found_lines, lines_p
 
 
 if __name__ == '__main__':

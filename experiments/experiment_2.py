@@ -73,7 +73,7 @@ if __name__ == '__main__':
             img_with_lines_PH = draw_lines_on_image(hough_transformer)
 
             img_with_lines, lines = baseline_detect_lines(
-                original_image=original_image, edges=edges, threshold=75)
+                original_image=original_image, img_edges=edges, threshold=75)
 
             for line in lines:
                 pt1, pt2 = line_to_pts(line[0])

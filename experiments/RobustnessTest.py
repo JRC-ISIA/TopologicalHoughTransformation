@@ -55,7 +55,7 @@ if __name__ == '__main__':
                 pers_limit=150, three_periods=True)
             img_with_lines_PH = draw_lines_on_image(hough_transformer)
             img_with_lines, lines = baseline_detect_lines(
-                original_image=original_image, edges=edges, threshold=20)
+                original_image=original_image, img_edges=edges, threshold=20)
 
             fig, axs = plt.subplots(3, 2, figsize=(10, 12),
                                     gridspec_kw={'height_ratios': [5, 2, 5]})

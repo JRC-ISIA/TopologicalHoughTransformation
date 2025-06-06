@@ -55,7 +55,7 @@ if __name__ == '__main__':
             image, value_threshold=150, pers_limit=150, three_periods=True)
 
         baseline_img, lines_found_by_opencv = baseline_detect_lines(
-            original_image=original_image, edges=edges, threshold=20)
+            original_image=original_image, img_edges=edges, threshold=20)
 
         lines_found_by_PH = hough_transformer.get_lines_rho_theta()
 
