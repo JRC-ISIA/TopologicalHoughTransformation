@@ -56,9 +56,9 @@ if __name__ == '__main__':
             plot_persistence_diagram(ax=axs[2][0], show_limit=True)
 
             my_true_lines, my_other_lines=hough_transformer.plot_hough_with_loci(true_lines=true_lines, other_lines=lines, show='none', my_ax=axs[2][1])
-            cm = get_conf_matrix(my_true_lines, my_other_lines, axs[1][1], 'Baseline Method')#, hough_transformer.get_lines())
+            cm = get_conf_matrix(my_true_lines, my_other_lines) #, hough_transformer.get_lines())
             cm_baseline = [[cm_baseline[i][j] + cm[i][j] for j in range(len(cm_baseline[i]))] for i in range(len(cm_baseline))]
-            cm = get_conf_matrix(my_true_lines, hough_transformer.get_lines(), axs[1][0], 'Our Method')
+            cm = get_conf_matrix(my_true_lines, hough_transformer.get_lines())
             cm_PH = [[cm_PH[i][j] + cm[i][j] for j in range(len(cm_PH[i]))] for i in range(len(cm_PH))]
 
             plt.tight_layout()
