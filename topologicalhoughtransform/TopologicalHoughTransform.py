@@ -16,18 +16,13 @@ from topologicalhoughtransform.utils.math import rho_theta_to_slope_intercept
 
 class TopologicalHoughTransform(object):
 
-    def __init__(self, image, angle_step=1, lines_are_white=True,
-                 three_periods=False, value_threshold=5,
-                 pers_limit=150, img_color=None, normalize=True):
+    def __init__(self, image, angle_step=1,
+                 three_periods=False, value_threshold=5, pers_limit=150):
 
         self.img = np.array(image)
-        if img_color is None:
-            self.img_plot = self.img
-        else:
-            self.img_plot = np.array(img_color)
+        self.img_plot = self.img
 
         self.angle_step = angle_step
-        self.lines_are_white = lines_are_white
         self.three_periods = three_periods
         self.value_threshold = value_threshold
         self.pers_limit = pers_limit
@@ -35,7 +30,7 @@ class TopologicalHoughTransform(object):
         self.lines = []
         self.line_coordinates = []
 
-        self._hough_transform(normalize)
+        self._hough_transform()
 
         # TODO: change this to use the find_peaks library, when the neighborhood
         #  construction is implemented/pull request is accepted
@@ -63,7 +58,7 @@ class TopologicalHoughTransform(object):
             for rho_index, theta_index in self.lines
         ]
 
-    def _hough_transform(self, normalize = True):
+    def _hough_transform(self):
         """Perform the Hough transformation on the image."""
         width, height = self.img.shape
         diag_len = int(np.hypot(width, height))
@@ -84,7 +79,7 @@ class TopologicalHoughTransform(object):
             self.hough_image = np.zeros((2 * diag_len, num_thetas), dtype=np.uint8)
 
         # threshold image on value for b/w image
-        are_edges = self.img > self.value_threshold if self.lines_are_white else self.img < self.value_threshold
+        are_edges = self.img > self.value_threshold
 
         # get (y, x) coordinates of all non-zero pixels
         y_idxs, x_idxs = np.nonzero(are_edges)
@@ -103,9 +98,8 @@ class TopologicalHoughTransform(object):
                 else:
                     self.hough_image[rho, t_idx] += 1
 
-        # Normalize the accumulator array, if required
-        if normalize:
-            self.hough_image = self.hough_image * (255 / np.max(self.hough_image))
+        # Normalize the accumulator array
+        self.hough_image = self.hough_image * (255 / np.max(self.hough_image))
 
 
     def get_persistence_array(self):

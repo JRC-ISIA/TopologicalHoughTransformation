@@ -19,6 +19,7 @@ from utils.plotting import draw_dashed_line, draw_lines_on_image, \
     plot_hough_with_loci
 from utils.test_data_generator import (generate_image, generate_line)
 
+
 if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
@@ -38,7 +39,7 @@ if __name__ == '__main__':
         cm_baseline = [[0, 0], [0, 0]]
         cm_PH = [[0, 0], [0, 0]]
 
-        for sim_run in range(0, args.num_sim_rounds):
+        for sim_run in range(args.num_sim_rounds):
             logging.info(f"Noiselvl: {noise_level}, run:{sim_run}\n")
             offset = random.randint(50, 100)
             rho1, theta1 = slope_intercept_to_rho_theta((args.line_1_slope, args.line_1_intercept + offset))
