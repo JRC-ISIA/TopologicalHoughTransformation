@@ -110,7 +110,9 @@ class TopologicalHoughTransform(object):
 
         # Normalize the accumulator array
         if self.normalize:
-            self.hough_image = self.hough_image * (255 / np.max(self.hough_image))
+            self.hough_image = self.hough_image * (
+                    255 / np.max(self.hough_image)
+            )
 
     def get_persistence_array(self):
         """Get the persistence array from the Hough transformation."""
