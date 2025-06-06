@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from topologicalhoughtransform.HoughforPoints import TopologicalHoughTransform
+from topologicalhoughtransform.TopologicalHoughTransform import \
+    TopologicalHoughTransform
 from utils.parser import create_parser
 from utils.test_data_generator import generate_image, generate_line
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     for sim_run in range(0, args.num_sim_rounds):
         dist_picture = 0
 
-        #generate the line
+        # generate the line
         line_points = []
         coordinates = generate_line(slope=args.line_1_slope,
                                     intercept=args.line_1_intercept,
@@ -47,15 +48,18 @@ if __name__ == '__main__':
                 selected_point = random.choice(valid_points)
 
                 # Generate a normally distributed change with mu=0 and sigma=10
-                delta_y=0
-                while(delta_y==0):
+                delta_y = 0
+                while delta_y == 0:
                     delta_y = int(np.random.normal(0, 10))
 
                 # Apply the change to the y-coordinate
                 new_y = selected_point[1] + delta_y
 
                 # Update the original list
-                coordinates = [(x, new_y) if (x, y) == selected_point else (x, y) for x, y in coordinates]
+                coordinates = [
+                    (x, new_y)
+                    if (x, y) == selected_point else
+                    (x, y) for x, y in coordinates]
                 logging.debug(f"Updated points: {coordinates}")
                 dist_picture += np.abs(delta_y)
 
@@ -71,20 +75,22 @@ if __name__ == '__main__':
             plt.title("Generated Image with Moved Points")
             plt.show()
 
-            hough_transformer = TopologicalHoughTransform(image, value_threshold=150, pers_limit=120, three_periods=True, normalize=False)
+            hough_transformer = TopologicalHoughTransform(
+                image, value_threshold=150, pers_limit=120,
+                three_periods=True, normalize=False)
 
-            # Legende ohne sichtbare Marker
-            pers_array=hough_transformer.get_persistence_array()
+            pers_array = hough_transformer.get_persistence_array()
 
-            line_points=coordinates.copy()
+            line_points = coordinates.copy()
             line_points = [(x, y + 1000) for x, y in line_points]
 
-            if j==0:
-                logging.trace("J == 0")
+            if j == 0:
                 pers_array_0 = pers_array
                 line_points_0 = line_points
             else:
-                logging.info("Calculating distance...")# Convert persistence diagrams to numpy arrays with float values
+                logging.info("Calculating distance...")
+                # Convert persistence diagrams to numpy arrays with
+                # float values
                 dgm1 = np.array(pers_array_0, dtype=np.float64)
                 dgm2 = np.array(pers_array, dtype=np.float64)
 
@@ -111,7 +117,8 @@ if __name__ == '__main__':
     })
 
     # Define file path
-    csv_file_path = os.path.join("output_folder", "bottleneck_distances_both.csv")
+    csv_file_path = os.path.join("output_folder",
+                                 "bottleneck_distances_both.csv")
 
     # Save to CSV
     df.to_csv(csv_file_path, index=False)
@@ -124,5 +131,6 @@ if __name__ == '__main__':
     plt.ylabel("Bottleneck Distance Persistence Diagram")
     plt.title("Stability")
     plt.xticks(rotation=45)  # Rotate x-axis labels if needed
-    plt.grid(True, linestyle="--", alpha=0.5)  # Optional grid for better readability
+    # Optional grid for better readability
+    plt.grid(True, linestyle="--", alpha=0.5)
     plt.show()

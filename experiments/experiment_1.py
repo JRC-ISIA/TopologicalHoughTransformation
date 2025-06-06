@@ -9,8 +9,8 @@ import numpy as np
 from topologicalhoughtransform.TopologicalHoughTransform import \
     TopologicalHoughTransform
 from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.math import slope_intercept_to_rho_theta, \
-    line_to_pts
+from topologicalhoughtransform.utils.math import \
+    slope_intercept_to_rho_theta, line_to_pts
 from topologicalhoughtransform.utils.plotting import plot_persistence_diagram
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.colors import pth_color
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     os.makedirs(args.output_directory, exist_ok=True)
     os.makedirs(os.path.join(args.output_directory, 'tmp'), exist_ok=True)
 
-    #SETTING
+    # hard settings
     args.line_2_slope = args.line_1_slope
 
     cms_baseline, cms_PH = [], []
@@ -41,26 +41,33 @@ if __name__ == '__main__':
 
         for sim_run in range(args.num_sim_rounds):
             logging.info(f"Noiselvl: {noise_level}, run:{sim_run}\n")
+
             offset = random.randint(50, 100)
-            rho1, theta1 = slope_intercept_to_rho_theta((args.line_1_slope, args.line_1_intercept + offset))
-            rho2, theta2 = slope_intercept_to_rho_theta((args.line_2_slope, args.line_2_intercept - offset))
+
+            rho1, theta1 = slope_intercept_to_rho_theta(
+                (args.line_1_slope, args.line_1_intercept + offset))
+            rho2, theta2 = slope_intercept_to_rho_theta(
+                (args.line_2_slope, args.line_2_intercept - offset))
+
             true_lines = [(rho1, theta1), (rho2, theta2)]
             logging.debug(f"True line coordinates: {true_lines}")
 
             coordinates = generate_line(
-                slope=args.line_1_slope, intercept=args.line_1_intercept + offset,
+                slope=args.line_1_slope,
+                intercept=args.line_1_intercept+offset,
                 noise_lvl=noise_level, num_points=args.n_point_line_1)
 
             coordinates += generate_line(
-                slope=args.line_2_slope, intercept=args.line_2_intercept - offset,
-                noise_lvl = noise_level, num_points=args.n_point_line_2)
+                slope=args.line_2_slope,
+                intercept=args.line_2_intercept-offset,
+                noise_lvl=noise_level, num_points=args.n_point_line_2)
 
             image = generate_image(coordinates)
             edges = np.array(image)
             original_image = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
-            hough_transformer = TopologicalHoughTransform(image, value_threshold=150,
-                                                          pers_limit=120, three_periods=True)
+            hough_transformer = TopologicalHoughTransform(
+                image, value_threshold=150, pers_limit=120, three_periods=True)
             img_with_lines_PH = draw_lines_on_image(hough_transformer)
 
             img_with_lines, lines = baseline_detect_lines(
@@ -76,16 +83,18 @@ if __name__ == '__main__':
             axs[0].imshow(img_with_lines_PH)
             axs[0].title.set_text('Image Space')
 
-            # (g0, hough_image_size=None, ax=None, show_limit=False, show_nums=True, pers_limit=150, three_periods=False)
-            plot_persistence_diagram(hough_transformer, ax=axs[1], show_limit=True, show_nums=False)
+            plot_persistence_diagram(hough_transformer, ax=axs[1],
+                                     show_limit=True, show_nums=False)
 
-            my_true_lines, my_other_lines = plot_hough_with_loci(hough_transformer,
-                true_lines=true_lines, other_lines=lines, show='none',
-                my_ax=axs[2])
+            my_true_lines, my_other_lines = plot_hough_with_loci(
+                hough_transformer, true_lines=true_lines, other_lines=lines,
+                show='none', my_ax=axs[2])
 
             # "Fake"-Handles für die Legende erstellen
-            handles = [plt.Line2D([0], [0], color='red', label='baseline'),
-                       plt.Line2D([0], [0], color='blue', label='our method')]
+            handles = [
+                plt.Line2D([0], [0], color='red', label='baseline'),
+                plt.Line2D([0], [0], color='blue', label='our method')
+            ]
 
             plt.tight_layout()
             plt.savefig(os.path.join(args.output_directory, "tmp",
@@ -95,12 +104,21 @@ if __name__ == '__main__':
                 logging.debug(f"Lines found with opencv: {line}")
 
             cm = get_conf_matrix(noise_level, my_true_lines, my_other_lines)
-            cm_baseline = [[cm_baseline[noise_idx][j] + cm[noise_idx][j] for j in range(len(cm_baseline[noise_idx]))] for i in range(len(cm_baseline))]
+            cm_baseline = [
+                [cm_baseline[noise_idx][j] + cm[noise_idx][j]
+                 for j in range(len(cm_baseline[noise_idx]))]
+                for i in range(len(cm_baseline))]
 
-            cm = get_conf_matrix(noise_level, my_true_lines, hough_transformer.get_lines())
-            cm_PH = [[cm_PH[noise_idx][j] + cm[noise_idx][j] for j in range(len(cm_PH[noise_idx]))] for i in range(len(cm_PH))]
+            cm = get_conf_matrix(noise_level, my_true_lines,
+                                 hough_transformer.get_lines())
+            cm_PH = [
+                [cm_PH[noise_idx][j] + cm[noise_idx][j]
+                 for j in range(len(cm_PH[noise_idx]))]
+                for i in range(len(cm_PH))
+            ]
 
-        logging.info(f"Confusion Matrix Baseline for d={noise_level}: {cm_baseline}")
+        logging.info(f"Confusion Matrix Baseline for "
+                     f"noise level={noise_level}: {cm_baseline}")
         logging.info(f"Confusion Matrix PH for d={noise_level}: {cm_PH}")
         cms_PH.append(cm_PH)
         cms_baseline.append(cm_baseline)
@@ -108,8 +126,10 @@ if __name__ == '__main__':
     logging.debug(f"Confusion Matrices Baseline: {cms_baseline}")
     logging.debug(f"Confusion Matrices PH: {cms_PH}")
 
-    with open(os.path.join(args.output_directory, "output_base.txt"), "a") as file:
-        file.write(f"Confusion Matrices Baseline: {cms_baseline}\n")
+    with open(os.path.join(args.output_directory,
+                           "output_base.txt"), "a") as f:
+        f.write(f"Confusion Matrices Baseline: {cms_baseline}\n")
 
-    with open(os.path.join(args.output_directory, "output_ph.txt"), "a") as file:
-        file.write(f"Confusion Matrices PH: {cms_PH}\n")
+    with open(os.path.join(args.output_directory,
+                           "output_ph.txt"), "a") as f:
+        f.write(f"Confusion Matrices PH: {cms_PH}\n")

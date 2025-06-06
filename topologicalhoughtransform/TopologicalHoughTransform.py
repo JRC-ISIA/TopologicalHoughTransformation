@@ -17,7 +17,8 @@ from topologicalhoughtransform.utils.math import rho_theta_to_slope_intercept
 class TopologicalHoughTransform(object):
 
     def __init__(self, image, angle_step=1,
-                 three_periods=False, value_threshold=5, pers_limit=150):
+                 three_periods=False, value_threshold=5, pers_limit=150,
+                 normalize=True):
 
         self.img = np.array(image)
         self.img_plot = self.img
@@ -26,6 +27,7 @@ class TopologicalHoughTransform(object):
         self.three_periods = three_periods
         self.value_threshold = value_threshold
         self.pers_limit = pers_limit
+        self.normalize = normalize
 
         self.lines = []
         self.line_coordinates = []
@@ -107,7 +109,8 @@ class TopologicalHoughTransform(object):
                     self.hough_image[rho, t_idx] += 1
 
         # Normalize the accumulator array
-        self.hough_image = self.hough_image * (255 / np.max(self.hough_image))
+        if self.normalize:
+            self.hough_image = self.hough_image * (255 / np.max(self.hough_image))
 
     def get_persistence_array(self):
         """Get the persistence array from the Hough transformation."""

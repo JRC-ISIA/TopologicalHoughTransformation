@@ -19,7 +19,6 @@ class TestMathUtils(unittest.TestCase):
         self.assertAlmostEqual(rho, -5, places=5)
         self.assertAlmostEqual(theta, 90, places=5)
 
-
     def test_slope_intercept_to_rho_theta_vertical_line(self):
         line = (float('inf'), -3)  # Vertical line: x = -3
         rho, theta = slope_intercept_to_rho_theta(line)

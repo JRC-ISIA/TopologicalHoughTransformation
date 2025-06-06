@@ -17,7 +17,7 @@ def rgb2gray(rgb):
 def generate_image(coordinates):
     image = Image.new('L', (width, height), 0)  # 'L' ist Graustufenbild
 
-    if coordinates == None:
+    if coordinates is None:
         for x in range(width):
             for y in range(height):
                 image.putpixel((x, y), 255)
@@ -39,7 +39,7 @@ def generate_noise():
 
 # Erstelle die Koordianten einer Linie
 def generate_line(noise_lvl=5, slope=1, intercept=0, num_points=100,
-                  equaldist = False):
+                  equaldist=False):
 
     theta = np.arctan(slope)  # Calculate angle of line
 
@@ -54,10 +54,11 @@ def generate_line(noise_lvl=5, slope=1, intercept=0, num_points=100,
             x = random.randint(0, width - 1)
 
             # Generate orthogonal noise components
-            if equaldist == True:
+            if equaldist:
                 noise_mag = (np.random.uniform(0, noise_lvl))
             else:
                 noise_mag = (np.random.normal(0, noise_lvl))
+
             noise_x = int(noise_mag * dx)
             noise_y = int(noise_mag * dy)
 
@@ -67,7 +68,8 @@ def generate_line(noise_lvl=5, slope=1, intercept=0, num_points=100,
 
             # Check if the point is within image boundaries
             if 0 <= new_x < width and 0 <= new_y < height:
-                if (new_x, new_y) not in white_points:  # Check before appending
+                # Check before appending
+                if (new_x, new_y) not in white_points:
                     white_points.append((new_x, new_y))
                     valid_point = True
 
@@ -78,11 +80,13 @@ def generate_line(noise_lvl=5, slope=1, intercept=0, num_points=100,
 def generate_line_angle(noise_lvl=5, angle=1, offset=0, num_points=100):
     white_points = []
     i = 0
+
     while i < num_points:
         x = random.randint(0, width - 1)
         noise = random.randint(-noise_lvl, noise_lvl)
         y = int(x * np.tan(np.deg2rad(angle)) + offset + noise)
-        if y < height and y > 0:
+
+        if height > y > 0:
             i += 1
             white_points.append((x, y))
     return white_points
@@ -91,8 +95,9 @@ def generate_line_angle(noise_lvl=5, angle=1, offset=0, num_points=100):
 # Erstelle eine vertikale Linie
 def generate_vertical_line(noise_lvl=5, x_position=0):
     coordinates = []
-    for y in range(0, height, height // 100):  # Ensure approximately 100 points
-        noisy_x = x_position + random.randint(-noise_lvl, noise_lvl)  # Add noise to x
+    for y in range(0, height, height // 100):
+        # Ensure approximately 100 points
+        noisy_x = x_position + random.randint(-noise_lvl, noise_lvl)
         coordinates.append((noisy_x, y))
     return coordinates
 
@@ -126,8 +131,10 @@ def generate_circle(noise=5):
 
     # Generiere Punkte auf dem Kreis
     angles = np.linspace(0, 2 * np.pi, num_points, endpoint=False)
-    circle_points = np.column_stack([center_x + radius * np.cos(angles),
-                                     center_y + radius * np.sin(angles)]).astype(np.int32)
+    circle_points = np.column_stack(
+        [center_x + radius * np.cos(angles),
+         center_y + radius * np.sin(angles)]
+    ).astype(np.int32)
 
     # Zeichne die Punkte auf das Bild
     for point in circle_points:
@@ -141,9 +148,13 @@ def generate_circle(noise=5):
 # Erstelle Koordiaten eines Bogens
 def generate_arc(curvature=0, noise=5, position=50):
     white_points = []
+
     # Line parameters
-    start_x, start_y = 10, height // 2 + position  # Adjust the starting point
-    end_x, end_y = width - 10, height // 2 + position  # Adjust the ending point
+    # Adjust the starting point
+    start_x, start_y = 10, height // 2 + position
+
+    # Adjust the ending point
+    end_x, end_y = width - 10, height // 2 + position
 
     # Generate points on the line
     x_values = np.linspace(start_x, end_x, num_points)
@@ -166,15 +177,20 @@ def generate_arc(curvature=0, noise=5, position=50):
     return white_points
 
 
-def generate_hough_line(rho, theta, noise_lvl=0, num_points=100, origin_shift=True):
+def generate_hough_line(rho, theta, noise_lvl=0,
+                        num_points=100, origin_shift=True):
     white_points = []
 
     # Cosine and Sine of theta
     cos_theta = np.cos(theta)
     sin_theta = np.sin(theta)
 
-    if np.isclose(sin_theta, 0, atol=1e-9):  # Check if sin(theta) is nearly zero, indicating a vertical line
-        x = 127 if origin_shift else int(rho)  # x-coordinate for a vertical line
+    # Check if sin(theta) is nearly zero, indicating a vertical line
+    if np.isclose(sin_theta, 0, atol=1e-9):
+
+        # x-coordinate for a vertical line
+        x = 127 if origin_shift else int(rho)
+
         for _ in range(num_points):
             y = random.randint(0, height - 1)
             noise_mag = random.randint(-noise_lvl, noise_lvl)

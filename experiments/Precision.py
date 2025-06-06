@@ -7,7 +7,8 @@ import numpy as np
 import seaborn as sns
 
 from utils.baseline_hough_transform import baseline_detect_lines
-from topologicalhoughtransform.TopologicalHoughTransform import TopologicalHoughTransform
+from topologicalhoughtransform.TopologicalHoughTransform import \
+    TopologicalHoughTransform
 
 from utils.plotting import draw_lines_on_image
 from utils.test_data_generator import (generate_image, generate_hough_line)
@@ -36,18 +37,28 @@ if __name__ == '__main__':
         rho = random.randint(0, 100)
         theta = random.uniform(0, np.pi)
         noise = random.randint(0, 10)
-        coordinates = generate_hough_line(rho=rho, theta=theta, noise_lvl=noise, origin_shift=True, num_points=220)
+        coordinates = generate_hough_line(
+            rho=rho, theta=theta, noise_lvl=noise,
+            origin_shift=True, num_points=220)
+
         image = generate_image(coordinates)
         edges = np.array(image)
         original_image = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+
         # adjust rho to mach the origin shift
         true_rho = rho + (127 * np.cos(theta) + 128 * np.sin(theta))
-        true_line = [(rho + (127 * np.cos(theta) + 128 * np.sin(theta))), theta]
+        true_line = [
+            (rho + (127 * np.cos(theta) + 128 * np.sin(theta))), theta
+        ]
 
-        hough_transformer = TopologicalHoughTransform(image, value_threshold=150, pers_limit=150, three_periods=True)
-        baseline_img, lines_found_by_opencv = baseline_detect_lines(original_image=original_image, edges=edges,
-                                                                    threshold=20)
+        hough_transformer = TopologicalHoughTransform(
+            image, value_threshold=150, pers_limit=150, three_periods=True)
+
+        baseline_img, lines_found_by_opencv = baseline_detect_lines(
+            original_image=original_image, edges=edges, threshold=20)
+
         lines_found_by_PH = hough_transformer.get_lines_rho_theta()
+
         transformed_lines = []
         if lines_found_by_PH is not None:
             for rho, theta in lines_found_by_PH:
@@ -68,31 +79,38 @@ if __name__ == '__main__':
         print(f" Lines found by PH:{transformed_lines}")
 
         if lines_found_by_opencv is not None and lines_found_by_PH is not None:
-            closest_BL_line = find_closest_line(true_line, lines_found_by_opencv)
+            closest_BL_line = find_closest_line(true_line,
+                                                lines_found_by_opencv)
             if closest_BL_line:
                 found_rho, found_theta = closest_BL_line
-                cumulative_rho_diffs['BL'].append(abs(true_line[0] - found_rho))
-                cumulative_theta_diffs['BL'].append(abs(true_line[1] - found_theta))
+
+                cumulative_rho_diffs['BL'].append(
+                    abs(true_line[0] - found_rho))
+
+                cumulative_theta_diffs['BL'].append(
+                    abs(true_line[1] - found_theta))
 
             closest_PH_line = find_closest_line(true_line, transformed_lines)
             if closest_PH_line:
                 found_rho, found_theta = closest_PH_line
-                cumulative_rho_diffs['PH'].append(abs(true_line[0] - found_rho))
-                cumulative_theta_diffs['PH'].append(abs(true_line[1] - found_theta))
+                cumulative_rho_diffs['PH'].append(
+                    abs(true_line[0] - found_rho))
+                cumulative_theta_diffs['PH'].append(
+                    abs(true_line[1] - found_theta))
 
     # Plotting the results
     fig, axs = plt.subplots(1, 2, figsize=(12, 6))
     # Create a boxplot for cumulative rho differences
-    sns.boxplot(ax=axs[0], data=[cumulative_rho_diffs['BL'], cumulative_rho_diffs['PH']])
+    sns.boxplot(ax=axs[0],
+                data=[cumulative_rho_diffs['BL'],
+                      cumulative_rho_diffs['PH']])
     axs[0].set_xticklabels(['Baseline', 'PH Hough'])
     axs[0].set_title('Cumulative Rho Differences')
 
     # Create a boxplot for cumulative theta differences
-    sns.boxplot(ax=axs[1], data=[cumulative_theta_diffs['BL'], cumulative_theta_diffs['PH']])
+    sns.boxplot(ax=axs[1],
+                data=[cumulative_theta_diffs['BL'],
+                      cumulative_theta_diffs['PH']])
     axs[1].set_xticklabels(['Baseline', 'PH Hough'])
     axs[1].set_title('Cumulative Theta Differences')
-
-    # Display the plot
     plt.show()
-    print(cumulative_theta_diffs)
-    print(cumulative_rho_diffs)

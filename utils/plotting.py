@@ -11,7 +11,7 @@ from matplotlib.lines import Line2D
 
 def display_image_with_wireframe_and_pointlines(data):
     # Function to display the image with wireframe and pointlines overlay
-    
+
     # Extract necessary data
     image = data['img']
     points = np.array(data['points'])
@@ -49,7 +49,8 @@ def display_image_with_wireframe_and_pointlines(data):
     return image
 
 
-def draw_dashed_line(image, pt1, pt2, color=(0, 0, 255), thickness=2, dash_length=20):
+def draw_dashed_line(image, pt1, pt2, color=(0, 0, 255),
+                     thickness=2, dash_length=20):
     """
     Draws a dashed line between pt1 and pt2 on the given image.
 
@@ -74,7 +75,8 @@ def draw_lines_on_image(tht):
     # Make a copy of the image to avoid modifying the original
     img_with_lines = 255 - tht.img.copy()
 
-    # Check if the image is grayscale and convert it to BGR to draw colored lines
+    # Check if the image is grayscale and convert it to BGR to draw
+    #  colored lines
     if len(img_with_lines.shape) == 2 or img_with_lines.shape[2] == 1:
         img_with_lines = cv2.cvtColor(img_with_lines, cv2.COLOR_GRAY2BGR)
 
@@ -87,20 +89,22 @@ def draw_lines_on_image(tht):
 
 # Hough-Diagramm mit Loci plotten
 def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
-                         my_ax=None, legend = True):
-    corr_true_lines=[]
-    corr_other_lines=[]
+                         my_ax=None, legend=True):
+    corr_true_lines = []
+    corr_other_lines = []
     # Plote Tranformiertes bild
     # Flip the image horizontally
     # im_flipped = np.flip(im, axis=0)
     found_lines = []
-    if my_ax == None:
+
+    if my_ax is None:
         if tht.three_periods:
             fig = plt.figure(figsize=(15, 5))
             ax = fig.add_subplot(111)
     else:
-        ax=my_ax
-    if my_ax == None or not tht.three_periods:
+        ax = my_ax
+
+    if my_ax is None or not tht.three_periods:
         ax.set_title("Hough Space $S$")
 
         ax.imshow(tht.hough_image, aspect='auto', cmap=cmap_s)
@@ -108,69 +112,58 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
         ax.set_xlabel(r"$\theta$ in °")
         ax.set_ylabel(r"$\rho$ in pixel")
 
-        #plt.contourf(xx, yy, self.hough_image, cmap='Purples')
         if tht.three_periods:
-            plt.axvline(tht.hough_image.shape[1] / 3, color='g', linestyle='-')  # Interessante Periode markieren
-            plt.axvline(tht.hough_image.shape[1] / 3 * 2, color='g', linestyle='-')  # Interessante Periode markieren
+            plt.axvline(tht.hough_image.shape[1] / 3, color='g', linestyle='-')
+            plt.axvline(tht.hough_image.shape[1] / 3 * 2,
+                        color='g', linestyle='-')
+
         for i, homclass in enumerate(tht.g0):
             p_birth, bl, pers, p_death = homclass
             if pers <= tht.pers_limit:
                 continue
-            y, x = p_birth
             logging.debug(f"Line found with PH: {p_birth} ")
-            #ax.plot([x], [y], '.', c=pth_color, label='Our Method')
-            #ax.plot([x], [y], '.', c='r',label='PH + hough')
-            #ax.text(x, y + 0.25, str(i + 1), color='r')
+
         if other_lines is not None:
             for i in range(0, len(other_lines)):
-                y = (other_lines[i][0][0] * (-1) + tht.hough_image.shape[0] / 2)  # wieso -1?
+                # why -1?
+                y = (-1 * other_lines[i][0][0] + tht.hough_image.shape[0] / 2)
                 x = np.rad2deg(other_lines[i][0][1]) - 90
-                corr_other_lines.append([y,x])
+                corr_other_lines.append([y, x])
                 if tht.three_periods:
-                    x+=180
+                    x += 180
                 ax.plot(x, y, 'v', c='yellow', alpha=0.3)
-                #ax.plot(x, y, '.', c='yellow', label='Baseline hough')
                 logging.debug(f"opencv base lines transformed {x, y}")
         if true_lines is not None:
             for line in true_lines:
-                y = (line[0] * (-1) + tht.hough_image.shape[0] / 2)  # wieso -1?
+                y = (line[0] * (-1) + tht.hough_image.shape[0] / 2)  # why -1?
                 x = (line[1] - 90)
-                corr_true_lines.append([y,x])
+                corr_true_lines.append([y, x])
                 if tht.three_periods:
-                    x+=180
+                    x += 180
                 ax.plot(x, y, 'x', c='fuchsia')
-                #ax.plot(x, y, '.', c='lime', label='Reference Lines')
                 logging.debug(f"True lines transformed {x, y}")
         plt.gca().invert_yaxis()
-        #if legend:
-        #    legend_handles = [
-        #        Line2D([0], [0], marker='x', color='w', markerfacecolor='fuchsia', markersize=10, linestyle='None', label='Reference Lines'),
-        #        Line2D([0], [0], marker='.', color='w', markerfacecolor='r', markersize=10, linestyle='None', label='Our Method'),
-        #        Line2D([0], [0], marker='v', color='w', markerfacecolor='yellow', markersize=10, linestyle='None', label='Baseline Method')
-        #    ]
-        #    ax.legend(handles=legend_handles)
         change_axes(ax, tht.hough_image)
         if show == 'one' or show == 'all':
             plt.show()
 
-    # wenn mehrere Perioden: gefundene Punkte in den Ausschnitt bringen und nochmals Plotten
+    # wenn mehrere Perioden: gefundene Punkte in den Ausschnitt bringen und
+    # nochmals Plotten
     if tht.three_periods:
-        corr_other_lines=[]
-        corr_true_lines=[]
+        corr_other_lines = []
+        corr_true_lines = []
         im = tht.hough_image
 
         if show != 'three':
             im = im[:, im.shape[1] // 3:im.shape[1] * 2 // 3]
 
-        if my_ax == None:
+        if my_ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
         else:
             ax = my_ax
 
         ax.set_title("Hough Space $S$")
-
-
         ax.set_xlabel(r"$\theta$ in °")
         ax.set_ylabel(r"$\rho$ in pixel")
 
@@ -178,22 +171,19 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
 
         if true_lines is not None:
             for line in true_lines:
-                y = (line[0] * (-1) + tht.hough_image.shape[0] / 2)  # wieso -1?
+                y = (-1 * line[0] + tht.hough_image.shape[0] / 2)  # why -1?
                 x = (line[1] - 90)
-                corr_true_lines.append([y,x])
-                #if self.three_periods:
-                #    x += 180
+                corr_true_lines.append([y, x])
                 ax.plot(x, y, 'x', c='black')
-                # ax.plot(x, y, '.', c='lime', label='Reference Lines')
                 logging.debug(f"True lines transformed {x, y}")
 
         if other_lines is not None:
             for i in range(0, len(other_lines)):
-                y = (other_lines[i][0][0] * (-1) + tht.hough_image.shape[0] / 2)  # wieso -1?
+                y = (
+                        -1 * other_lines[i][0][0] + tht.hough_image.shape[0]/2
+                )  # why -1?
                 x = np.rad2deg(other_lines[i][0][1]) - 90
-                corr_other_lines.append([y,x])
-                #if self.three_periods:
-                #    x += 180
+                corr_other_lines.append([y, x])
                 ax.plot(x, y, 'v', c=baseline_color_str, alpha=0.3)
                 logging.debug(f"opencv base lines transformed {x, y}")
 
@@ -201,19 +191,19 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
         for i, p_birth in enumerate(tht.lines):
             y, x = p_birth
             logging.debug(f'Birth Locus: x={x}, y={y}')
-            #x = x - 180
+
+            # x = x - 180
             if 0 <= x <= 180:
                 # In Originalperiode gefunden
-                #Draw 1st point
-                #TODO: FIX: Punkt wird auch im Hough Bild mit 1 periode gezeichnet
-                y = -y+ im.shape[0] if show == 'three' else y #quickfix
+                # Draw 1st point
+                # TODO: FIX: Punkt wird auch im Hough Bild mit 1 periode
+                #  gezeichnet
+                y = -y + im.shape[0] if show == 'three' else y
                 ax.plot([x], [y], '.', c=pth_color_str)
-                #ax.text(x, y + 0.25, str(i + 1), color='r')
-                #logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
                 corrected_found_lines.append((y, x))
-                #Quickfix JF für Präsentation
+
+                # TODO: Quickfix JF für Präsentation (?)
                 if show == 'three':
-                    #Draw 2nd point
                     x += 180
                     y = -y + im.shape[0]
                     ax.plot([x], [y], '.', c='r')
@@ -227,20 +217,15 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
             elif -90 <= x < 0:
                 if show != 'three':
                     y = -y + im.shape[0]
-                    #y = + im.shape[0]
                     x += 180
-                    #if i == 0:
                     ax.plot([x], [y], '.', c='b')
-                    #ax.text(x, y + 0.25, str(i), color='y')
                     logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
                 corrected_found_lines.append((y, x))
             elif 180 < x <= 270:
                 if show != 'three':
                     y = - y + im.shape[0]
                     x -= 180
-                    #if i == 0:
                     ax.plot([x], [y], '.', c='b')
-                    #ax.text(x, y + 0.25, str(i), color='b')
                     logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
                 corrected_found_lines.append((y, x))
 
@@ -248,9 +233,15 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
         plt.gca().invert_yaxis()
         if legend:
             legend_handles = [
-                Line2D([0], [0], marker='x', color='black', markerfacecolor='black', markersize=10, linestyle='None', label='Ground Truth'),
-                Line2D([0], [0], marker='.', color='w', markerfacecolor=pth_color_str, markersize=10, linestyle='None', label='Our Method'),
-                Line2D([0], [0], marker='v', color='w', markerfacecolor=baseline_color_str, markersize=10, linestyle='None', label='Baseline Method')
+                Line2D([0], [0], marker='x', color='black',
+                       markerfacecolor='black', markersize=10,
+                       linestyle='None', label='Ground Truth'),
+                Line2D([0], [0], marker='.', color='w',
+                       markerfacecolor=pth_color_str, markersize=10,
+                       linestyle='None', label='Our Method'),
+                Line2D([0], [0], marker='v', color='w',
+                       markerfacecolor=baseline_color_str, markersize=10,
+                       linestyle='None', label='Baseline Method')
             ]
             ax.legend(handles=legend_handles)
         change_axes(ax, im)
