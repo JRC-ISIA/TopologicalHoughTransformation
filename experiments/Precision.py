@@ -1,3 +1,12 @@
+"""
+Precision.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Topological Hough Transform implementation using the
+  superlevel-set filtration with persistence homology.
+Note: This experiment was not part of the publication.
+License: MIT
+"""
 import os
 import random
 

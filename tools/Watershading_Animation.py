@@ -1,3 +1,10 @@
+"""
+Watershading_Animation.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Tool to generate an animation of the watershading process.
+License: MIT
+"""
 import os
 import tempfile
 

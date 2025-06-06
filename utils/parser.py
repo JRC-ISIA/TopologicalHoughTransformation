@@ -1,3 +1,10 @@
+"""
+parser.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Definition of parser for all experiments.
+License: MIT
+"""
 import argparse
 
 

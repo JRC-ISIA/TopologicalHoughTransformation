@@ -1,3 +1,12 @@
+"""
+RobustnessTest.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Experiment to test the robustness of the Topological Hough
+                Transform against noise in the input data.
+Note: This experiment was not part of the publication.
+License: MIT
+"""
 import os
 
 import cv2
@@ -6,15 +15,16 @@ import numpy as np
 import seaborn as sns
 from PIL import Image
 
-from topologicalhoughtransform.utils.plotting import plot_persistence_diagram
 from utils.baseline_hough_transform import baseline_detect_lines
 from topologicalhoughtransform.TopologicalHoughTransform import \
     TopologicalHoughTransform
 
-from utils.plotting import draw_lines_on_image, plot_hough_with_loci
+from utils.plotting import draw_lines_on_image, plot_hough_with_loci, \
+    plot_persistence_diagram
 from utils.test_data_generator import (generate_image, generate_line)
 from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.math import slope_intercept_to_rho_theta
+from topologicalhoughtransform.utils.transform import \
+    slope_intercept_to_rho_theta
 
 if __name__ == '__main__':
     filenames = []
@@ -36,15 +46,15 @@ if __name__ == '__main__':
     cm_baseline = [[0, 0], [0, 0]]
     cm_PH = [[0, 0], [0, 0]]
 
-    for noise in range(8, 10):
-        for j in range(0, 10):
+    for noise_value in range(8, 10):
+        for experiment_idx in range(0, 10):
             coordinates = generate_line(
                 slope=slope, intercept=intercept1,
-                noise_lvl=noise, num_points=150)
+                noise_lvl=noise_value, num_points=150)
 
             coordinates += generate_line(
                 slope=slope, intercept=intercept2,
-                noise_lvl=noise, num_points=120)
+                noise_lvl=noise_value, num_points=120)
 
             image = generate_image(coordinates)
             edges = np.array(image)
@@ -59,13 +69,13 @@ if __name__ == '__main__':
 
             fig, axs = plt.subplots(3, 2, figsize=(10, 12),
                                     gridspec_kw={'height_ratios': [5, 2, 5]})
-            fig.suptitle(f'Noise Level: {noise}')
+            fig.suptitle(f'Noise Level: {noise_value}')
 
             axs[0][0].imshow(img_with_lines_PH)
             axs[0][0].title.set_text('Our Method')
             axs[0][1].imshow(img_with_lines)
             axs[0][1].title.set_text('Baseline Method')
-            filename = f'plot_{noise}{j}.png'
+            filename = f'plot_{noise_value}{experiment_idx}.png'
 
             plot_persistence_diagram(hough_transformer,
                                      ax=axs[2][0], show_limit=True)

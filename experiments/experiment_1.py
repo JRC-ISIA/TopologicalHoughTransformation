@@ -11,12 +11,11 @@ from topologicalhoughtransform.TopologicalHoughTransform import \
 from topologicalhoughtransform.utils.eval import get_conf_matrix
 from topologicalhoughtransform.utils.math import \
     slope_intercept_to_rho_theta, line_to_pts
-from topologicalhoughtransform.utils.plotting import plot_persistence_diagram
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.colors import pth_color
 from utils.parser import create_parser
 from utils.plotting import draw_dashed_line, draw_lines_on_image, \
-    plot_hough_with_loci
+    plot_hough_with_loci, plot_persistence_diagram
 from utils.test_data_generator import (generate_image, generate_line)
 
 

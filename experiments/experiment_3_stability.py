@@ -24,23 +24,20 @@ if __name__ == '__main__':
     os.makedirs(args.output_directory, exist_ok=True)
     os.makedirs(os.path.join(args.output_directory, 'tmp'), exist_ok=True)
 
-    pers_array_0 = []
-    line_points_0 = []
-    distances_i = []
-    distances_p = []
+    pers_array_0, line_points_0 = [], []
+    w1_distances, db_distances_pd, db_distances_img = [], [], []
 
-    for sim_run in range(0, args.num_sim_rounds):
-        dist_picture = 0
+    for sim_run in range(args.num_sim_rounds):
+        w1_dist = 0
 
-        # generate the line
         line_points = []
-        coordinates = generate_line(slope=args.line_1_slope,
+        coordinates = generate_line(args, slope=args.line_1_slope,
                                     intercept=args.line_1_intercept,
                                     num_points=args.n_point_line_1,
                                     noise_lvl=0)
 
-        for j in range(0, 36):
-            if j > 0:
+        for move_point_idx in range(0, 36):
+            if move_point_idx > 0:
                 # Filter points where the second value is 120
                 valid_points = [p for p in coordinates if p[1] == 120]
 
@@ -59,13 +56,14 @@ if __name__ == '__main__':
                 coordinates = [
                     (x, new_y)
                     if (x, y) == selected_point else
-                    (x, y) for x, y in coordinates]
+                    (x, y) for x, y in coordinates
+                ]
                 logging.debug(f"Updated points: {coordinates}")
-                dist_picture += np.abs(delta_y)
+                w1_dist += np.abs(delta_y)
 
-            logging.debug(f"# of moved Points: {j}, run:{sim_run}")
+            logging.debug(f"# of moved Points: {move_point_idx}, run:{sim_run}")
 
-            image = generate_image(coordinates)
+            image = generate_image(coordinates, args)
             edges = np.array(image)
             original_image = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
@@ -80,57 +78,50 @@ if __name__ == '__main__':
                 three_periods=True, normalize=False)
 
             pers_array = hough_transformer.get_persistence_array()
-
-            line_points = coordinates.copy()
             line_points = [(x, y + 1000) for x, y in line_points]
 
-            if j == 0:
+            if move_point_idx == 0:
                 pers_array_0 = pers_array
                 line_points_0 = line_points
             else:
-                logging.info("Calculating distance...")
                 # Convert persistence diagrams to numpy arrays with
                 # float values
+                logging.debug("Calculating distance...")
                 dgm1 = np.array(pers_array_0, dtype=np.float64)
                 dgm2 = np.array(pers_array, dtype=np.float64)
 
+                # Compute Bottleneck Distance of Persistence Arrays
+                dB_pd = gd.bottleneck_distance(dgm1, dgm2)
+                logging.debug(f"Bottleneck Distance $d_B$ in Hough Space: {dB_pd}")
+                db_distances_pd.append(dB_pd)
+
+                # Compute Bottleneck Distance of Input images ($d_B$ between
+                #   input space)
+                dgm1_inp = np.array(line_points_0, dtype=np.float64)
+                dgm2_inp = np.array(line_points, dtype=np.float64)
+
                 # Compute Bottleneck Distance
-                distance_p = gd.bottleneck_distance(dgm1, dgm2)
-                logging.debug(f"Distance Hough: {distance_p}")
-                distances_p.append(distance_p)
+                dB_img = gd.bottleneck_distance(dgm1_inp, dgm2_inp)
+                logging.debug(f"Bottleneck Distance $d_B$ in Image Space: {dB_img}")
+                db_distances_img.append(dB_img)
 
-                dgm1_i = np.array(line_points_0, dtype=np.float64)
-                dgm2_i = np.array(line_points, dtype=np.float64)
+                w1_distances.append(w1_dist)
 
-                # Compute Bottleneck Distance
-                distance_i = gd.bottleneck_distance(dgm1_i, dgm2_i)
-                logging.debug(f"Distance Image: {distance_i}")
-                distances_i.append(distance_i)
-
-    logging.debug(f"Distance Hough Array: {distances_p}")
-    logging.debug(f"Distance Image Array: {distances_i}")
+    logging.info(f"d_B Distance Hough Space: {db_distances_pd}")
+    logging.info(f"d_B Distance Image Space: {db_distances_img}")
+    logging.info(f"W1 Distance Image Space: {w1_distances}")
 
     # Create a DataFrame
     df = pd.DataFrame({
-        "Distance_image": distances_i,
-        "Distance_pers": distances_p,
+        "W1 Image": w1_distances,
+        "dB Pers": db_distances_pd,
+        "dB Img": db_distances_img,
     })
 
     # Define file path
     csv_file_path = os.path.join("output_folder",
-                                 "bottleneck_distances_both.csv")
+                                 "distance_experiment.csv")
 
     # Save to CSV
     df.to_csv(csv_file_path, index=False)
     logging.info(f"CSV file saved as {csv_file_path}")
-
-    # Scatter plot for each unique Epsilon
-    plt.figure(figsize=(10, 6))
-    plt.scatter(df["Distance_image"], df["Distance_pers"], alpha=0.6)
-    plt.xlabel("Bottleneck Distance Image")
-    plt.ylabel("Bottleneck Distance Persistence Diagram")
-    plt.title("Stability")
-    plt.xticks(rotation=45)  # Rotate x-axis labels if needed
-    # Optional grid for better readability
-    plt.grid(True, linestyle="--", alpha=0.5)
-    plt.show()

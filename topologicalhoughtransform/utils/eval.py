@@ -2,6 +2,8 @@ import numpy as np
 
 
 def get_conf_matrix(noise, true_lines, lines):
+    """Calculates the confusion matrix for the detected lines against the
+    true lines."""
 
     # eq. 1° in the angle direction
     limit_theta = np.arctan2(2*noise, 256)+2

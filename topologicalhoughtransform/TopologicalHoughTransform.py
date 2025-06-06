@@ -1,7 +1,7 @@
 """
 TopologicalHoughTransform.py
 Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
-Date: 2025-06-04
+Date: June 2025
 Description: Topological Hough Transform implementation using the
   superlevel-set filtration with persistence homology.
 License: MIT
@@ -11,7 +11,7 @@ import logging
 import numpy as np
 
 from topologicalhoughtransform.ph.PersistenceHomologie import persistence
-from topologicalhoughtransform.utils.math import rho_theta_to_slope_intercept
+from topologicalhoughtransform.utils.transform import rho_theta_to_slope_intercept
 
 
 class TopologicalHoughTransform(object):

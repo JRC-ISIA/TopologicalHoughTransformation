@@ -1,5 +1,14 @@
+"""
+baseline_hough_transform.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: method to call the OpenCV Hough Transform to detect lines in an
+             image.
+License: MIT
+"""
 import logging
 import os
+import pickle
 
 import cv2
 import matplotlib.pyplot as plt
@@ -7,7 +16,6 @@ import numpy as np
 
 from utils.colors import pth_color
 from topologicalhoughtransform.utils.math import line_to_pts
-from utils.io import load_wireframe_data
 from utils.plotting import display_image_with_wireframe_and_pointlines
 
 
@@ -50,6 +58,13 @@ def baseline_detect_lines(original_image, img_edges, threshold=150):
                                   accumulator_array, 1, 0)
 
     return found_lines, lines_p
+
+
+def load_wireframe_data(file_path):
+    """Load wireframe data from a pickle file."""
+    with open(file_path, 'rb') as f:
+        img_data = pickle.load(f)
+    return img_data
 
 
 if __name__ == '__main__':

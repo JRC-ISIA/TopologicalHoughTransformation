@@ -1,10 +1,16 @@
+"""
+test_transform.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Unit tests for the transformation functions between
+                slope-intercept and polar coordinates (rho, theta) for lines,
+                and for converting lines to points.
+License: MIT
+"""
 import unittest
 
-from topologicalhoughtransform.utils.math import (
-    slope_intercept_to_rho_theta,
-    rho_theta_to_slope_intercept,
-    line_to_pts,
-)
+from topologicalhoughtransform.utils.transform import \
+    slope_intercept_to_rho_theta, rho_theta_to_slope_intercept, line_to_pts
 
 
 class TestMathUtils(unittest.TestCase):

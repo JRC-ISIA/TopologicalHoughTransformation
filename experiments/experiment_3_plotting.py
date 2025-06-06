@@ -1,13 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Import data from CSV
-file_path = 'bottleneck_distances_2.csv'  # Change this to your CSV file path
+file_path = 'distance_experiment.csv'
 data = pd.read_csv(file_path)
 
-# Assuming the CSV has two columns, we extract them
-d_W = data.iloc[:, 0]  # First column
-d_B = data.iloc[:, 1]  # Second column
+d_W = data.iloc[:, "W1 Image"]
+d_B = data.iloc[:, "dB Pers"]
 
 # Plot first scatterplot
 fig, axs = plt.subplots(1, 2, figsize=(10, 5))

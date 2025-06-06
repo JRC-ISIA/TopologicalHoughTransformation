@@ -1,3 +1,10 @@
+"""
+colors.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Some colors used in the project.
+License: MIT
+"""
 import matplotlib.pyplot as plt
 import matplotlib.colors
 

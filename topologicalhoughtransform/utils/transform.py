@@ -1,3 +1,11 @@
+"""
+transform.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Methods to convert between slope-intercept and polar coordinates
+                (rho, theta) for lines, and to convert lines to points.
+License: MIT
+"""
 import numpy as np
 
 
