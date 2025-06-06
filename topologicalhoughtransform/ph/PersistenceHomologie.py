@@ -3,11 +3,14 @@ from topologicalhoughtransform.ph.UnionFind import UnionFind
 
 __author__ = "Stefan Huber <shuber@sthu.org>"
 
+
 def get(im, p):
     return im[p[0]][p[1]]
 
+
 def inc(im, p):
-    im[p[0]][p[1]]=im[p[0]][p[1]]+1
+    im[p[0]][p[1]] = im[p[0]][p[1]] + 1
+
 
 def _default_neighborship(p, w, h, eight_neighborship=True):
     logging.warning("Using default neighborship construction")
@@ -37,7 +40,7 @@ def iter_neighbors(p, w, h, neighborship_construction=None):
         yield j, i
 
 
-def persistence(im, persistence_neighborship_construction=None):
+def persistence(im, neighborship_construction=None):
     h, w = im.shape
 
     # Get indices orderd by value from high to low. As a tie-breaker, we use
@@ -59,7 +62,12 @@ def persistence(im, persistence_neighborship_construction=None):
     # Process pixels from high to low
     for i, p in enumerate(indices):
         v = get(im, p)
-        ni = [uf[q] for q in iter_neighbors(p, w, h, neighborship_construction=persistence_neighborship_construction) if q in uf]
+        ni = [
+            uf[q] for q in iter_neighbors(
+                p, w, h,
+                neighborship_construction=neighborship_construction)
+            if q in uf
+        ]
 
         # Sort by (value, index) as key. Note that this is the same sorting
         # order as for indices. Otherwise, we have an inconsistency notion of
@@ -81,7 +89,11 @@ def persistence(im, persistence_neighborship_construction=None):
                     groups0[uf[q]] = (bl, bl-v, p)
                 uf.union(oldp, q)
 
-    groups0 = [(k, groups0[k][0], groups0[k][1], groups0[k][2]) for k in groups0]
+    groups0 = [(k,
+                groups0[k][0],
+                groups0[k][1],
+                groups0[k][2]) for k in groups0]
+
     groups0.sort(key=lambda g: g[2], reverse=True)
 
     return groups0

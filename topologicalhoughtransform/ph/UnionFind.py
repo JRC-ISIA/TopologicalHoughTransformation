@@ -1,3 +1,8 @@
+"""A simple implementation of persistent homology on 2D images."""
+
+__author__ = "Stefan Huber <shuber@sthu.org>"
+
+
 class UnionFind:
 
     """Union-find data structure.
@@ -34,7 +39,7 @@ class UnionFind:
 
         # check for previously unknown object
         if object not in self.parents:
-            assert(False)
+            assert False
             self.parents[object] = object
             self.weights[object] = 1
             return object
@@ -53,7 +58,6 @@ class UnionFind:
 
     def __iter__(self):
         """Iterate through all items ever found or unioned by this structure.
-
         """
         return iter(self.parents)
 
@@ -64,11 +68,3 @@ class UnionFind:
         for r in roots:
             if r != heaviest:
                 self.parents[r] = heaviest
-
-
-#!/usr/bin/python2
-
-"""A simple implementation of persistent homology on 2D images."""
-
-__author__ = "Stefan Huber <shuber@sthu.org>"
-

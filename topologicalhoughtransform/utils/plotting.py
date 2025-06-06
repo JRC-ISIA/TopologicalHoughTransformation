@@ -2,8 +2,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-# Persistence Diagramm plotten
-def plot_persistence_diagram(tht, ax=None, show_limit=False, show_nums=True, three_periods=False):
+def plot_persistence_diagram(tht, ax=None, show_limit=False,
+                             show_nums=True, three_periods=False):
     """
     Plot the persistence diagram from the Hough transform results.
     Args:
@@ -17,7 +17,7 @@ def plot_persistence_diagram(tht, ax=None, show_limit=False, show_nums=True, thr
     if ax is None:
         _, ax = plt.subplots(1, 1)
 
-    j=0
+    point_index_counter = 1
 
     for i, homclass in enumerate(tht.g0):
         p_birth, bl, pers, p_death = homclass
@@ -33,13 +33,16 @@ def plot_persistence_diagram(tht, ax=None, show_limit=False, show_nums=True, thr
         ax.plot([x], [y], '.', c='k')
 
         if show_nums:
-            ax.text(y, x + 2, str(j+1), color='b')
-        j+=1
+            ax.text(y, x + 2, str(point_index_counter), color='b')
+
+        point_index_counter += 1
 
     # Limit einzeichnen
     # Add line with slope 1 starting at (0, 10)
     if show_limit:
-        ax.plot([250, tht.pers_limit], [255-tht.pers_limit, 0], '--', c='#648FFF')
+        ax.plot([250, tht.pers_limit],
+                [255-tht.pers_limit, 0],
+                '--', c='#648FFF')
 
     # plot diagonal
     ax.plot([0, 255], [0, 255], '--', c='black')

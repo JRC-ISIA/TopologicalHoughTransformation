@@ -2,8 +2,8 @@
 TopologicalHoughTransform.py
 Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
 Date: 2025-06-04
-Description: Topological Hough Transform implementation using the superlevel-set
-  filtration with persistence homology.
+Description: Topological Hough Transform implementation using the
+  superlevel-set filtration with persistence homology.
 License: MIT
 """
 import logging
@@ -32,10 +32,12 @@ class TopologicalHoughTransform(object):
 
         self._hough_transform()
 
-        # TODO: change this to use the find_peaks library, when the neighborhood
-        #  construction is implemented/pull request is accepted
-        self.g0 = persistence(np.array(self.hough_image),
-                              persistence_neighborship_construction=moebius_neighborship_construction)
+        # TODO: change this to use the find_peaks library, when the
+        #  neighborhood construction is implemented/pull request is accepted
+        self.g0 = persistence(
+            np.array(self.hough_image),
+            neighborship_construction=moebius_neighborship_construction
+        )
         self._search_lines()
         self._calc_line_list()
 
@@ -54,7 +56,8 @@ class TopologicalHoughTransform(object):
     def get_lines_rho_theta(self):
         """Get the extracted lines in rho-theta format."""
         return [
-            (rho_index - self.hough_image.shape[0] / 2, np.deg2rad(theta_index - 90))
+            (rho_index - self.hough_image.shape[0]/2,
+             np.deg2rad(theta_index-90))
             for rho_index, theta_index in self.lines
         ]
 
@@ -64,7 +67,9 @@ class TopologicalHoughTransform(object):
         diag_len = int(np.hypot(width, height))
 
         # define Rho and Theta ranges
-        self.thetas = np.deg2rad(np.linspace(-90.0, 90.0, int(180 / self.angle_step)))
+        self.thetas = np.deg2rad(
+            np.linspace(-90.0, 90.0, int(180/self.angle_step))
+        )
         self.rhos = np.linspace(-diag_len, diag_len, len(self.thetas))
 
         # Cache some resuable values
@@ -73,10 +78,11 @@ class TopologicalHoughTransform(object):
         num_thetas = len(self.thetas)
 
         # setup Hough accumulator array of theta vs rho
-        if self.three_periods:
-            self.hough_image = np.zeros((2 * diag_len, 3 * num_thetas), dtype=np.uint8)
-        else:
-            self.hough_image = np.zeros((2 * diag_len, num_thetas), dtype=np.uint8)
+        theta_length_shape = 3*num_thetas if self.three_periods else num_thetas
+        self.hough_image = np.zeros(
+            (2 * diag_len, theta_length_shape),
+            dtype=np.uint8
+        )
 
         # threshold image on value for b/w image
         are_edges = self.img > self.value_threshold
@@ -89,7 +95,9 @@ class TopologicalHoughTransform(object):
             for t_idx in range(num_thetas):
 
                 # Calculate rho. diag_len is added for a positive index
-                rho = int(diag_len + np.round(x * cos_t[t_idx] + y * sin_t[t_idx]))
+                rho = int(
+                    diag_len + np.round(x * cos_t[t_idx] + y * sin_t[t_idx])
+                )
 
                 if self.three_periods:
                     self.hough_image[-rho, t_idx] += 1
@@ -100,7 +108,6 @@ class TopologicalHoughTransform(object):
 
         # Normalize the accumulator array
         self.hough_image = self.hough_image * (255 / np.max(self.hough_image))
-
 
     def get_persistence_array(self):
         """Get the persistence array from the Hough transformation."""
@@ -118,7 +125,8 @@ class TopologicalHoughTransform(object):
         return persistence_values
 
     def _search_lines(self):
-        """Search for lines in the Hough transformed image based on persistence values."""
+        """Search for lines in the Hough transformed image based on persistence
+        values."""
         self.lines = [
             birth for birth, _, pers, _ in self.g0 if pers > self.pers_limit
         ]
@@ -126,8 +134,8 @@ class TopologicalHoughTransform(object):
         if self.three_periods:
             # remove reduncandy of the lines and bring them into the original
             # period
-            self.lines = [(y, x - 180) for (y, x) in self.lines if 0 <= x - 180 <= 180]
-
+            self.lines = [(y, x-180) for (y, x) in self.lines
+                          if 0 <= x-180 <= 180]
 
     def _calc_line_list(self):
         for y, x in self.lines:
@@ -142,7 +150,7 @@ class TopologicalHoughTransform(object):
 
             # calculate line
             x_c = np.arange(0, self.img.shape[1])
-            vertical = False
+
             if k == float('inf') or k == float('-inf'):
                 x_coords = [d] * self.img.shape[0]
                 # if line vertical, use all y values

@@ -3,18 +3,18 @@ import numpy as np
 
 def slope_intercept_to_rho_theta(line):
     """
-    Convert a line defined by slope (k) and y-intercept (d) to polar coordinates
-    (rho and theta).
+    Convert a line defined by slope (k) and y-intercept (d) to polar
+    coordinates (rho and theta).
     :param line: A tuple (k, d) where k is the slope and d is the y-intercept.
-    :return: A tuple (rho, theta) where rho is the distance from the origin to the line
-    and theta is the angle in degrees.
+    :return: A tuple (rho, theta) where rho is the distance from the origin to
+             the line and theta is the angle in degrees.
     """
     k, d = line
 
     # Avoid division by zero for vertical lines
     if abs(k) == float('inf'):
-        # a vertical line corresponds to theta = 0 or 180 degrees and rho is the
-        # negative value of d
+        # a vertical line corresponds to theta = 0 or 180 degrees and rho is
+        # the negative value of d
         theta = 0
         rho = -d
     else:
@@ -37,8 +37,8 @@ def rho_theta_to_slope_intercept(line):
     """
     Convert a line defined by polar coordinates (rho and theta) to cartesian
     coordinates (slope (k) and y-intercept (d)).
-    :param line: A tuple (rho, theta) where rho is the distance from the origin to the line
-    and theta is the angle in degrees.
+    :param line: A tuple (rho, theta) where rho is the distance from the origin
+                 to the line and theta is the angle in degrees.
     :return: A tuple (k, d) where k is the slope and d is the y-intercept.
     """
     rho, theta = line
@@ -61,13 +61,14 @@ def rho_theta_to_slope_intercept(line):
 
 def line_to_pts(line, shift=10):
     """
-    Convert a line defined by rho and theta to two points (x1, y1) and (x2, y2),
-    where the line is crossing through.
-    :param line: A tuple (rho, theta) where rho is the distance from the origin to the line
-                 and theta is the angle in degrees.
-    :param shift: Distance from the center of the image to the points on the line.
-                  Default is 10 pixels.
-    :return: Two points (x1, y1) and (x2, y2) that define landmarks of the line.
+    Convert a line defined by rho and theta to two points (x1, y1) and
+        (x2, y2), where the line is crossing through.
+    :param line: A tuple (rho, theta) where rho is the distance from the origin
+                 to the line and theta is the angle in degrees.
+    :param shift: Distance from the center of the image to the points on the
+                  line. Default is 10 pixels.
+    :return: Two points (x1, y1) and (x2, y2) that define landmarks of the
+             line.
     """
     rho, theta = line
     a, b = np.cos(np.deg2rad(theta)), np.sin(np.deg2rad(theta))
