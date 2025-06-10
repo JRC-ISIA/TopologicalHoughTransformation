@@ -1,8 +1,18 @@
+"""
+test_topologicalhoughtransform.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Unit tests for the Topological Hough Transform implementation.
+License: MIT
+"""
 import unittest
 import numpy as np
-from topologicalhoughtransform.topological_hough_transform import TopologicalHoughTransform
+from topologicalhoughtransform.topological_hough_transform import \
+    TopologicalHoughTransform
+
 
 class TestTopologicalHoughTransform(unittest.TestCase):
+    """Unit tests for the Topological Hough Transform implementation."""
 
     def setUp(self):
         """Set up common test data."""
@@ -25,7 +35,8 @@ class TestTopologicalHoughTransform(unittest.TestCase):
 
     def test_detect_lines_with_noise(self):
         """Test line detection on a noisy image."""
-        noisy_image = self.image + np.random.randint(0, 255, self.image.shape, dtype=np.uint8)
+        noisy_image = self.image + np.random.randint(0, 255, self.image.shape,
+                                                     dtype=np.uint8)
         transform = TopologicalHoughTransform(noisy_image)
         lines = transform.get_lines()
         self.assertIsInstance(lines, list)
@@ -57,10 +68,12 @@ class TestTopologicalHoughTransform(unittest.TestCase):
         """Test line detection on an image with noisy curved lines."""
         for i in range(100):
             self.image[i, i] = 255  # Add a diagonal line
-        noisy_image = self.image + np.random.randint(0, 50, self.image.shape, dtype=np.uint8)
+        noisy_image = self.image + np.random.randint(0, 50, self.image.shape,
+                                                     dtype=np.uint8)
         transform = TopologicalHoughTransform(noisy_image)
         lines = transform.get_lines()
         self.assertGreater(len(lines), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
