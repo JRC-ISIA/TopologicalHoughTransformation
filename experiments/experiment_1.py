@@ -62,15 +62,17 @@ if __name__ == '__main__':
             logging.debug("True line coordinates at (%f, %f), (%f, %f)",
                           rho1, theta1, rho2, theta2)
 
-            coordinates = generate_line(args,
-                slope=args.line_1_slope,
+            coordinates = generate_line(
+                args, slope=args.line_1_slope,
                 intercept=args.line_1_intercept+offset,
-                noise_lvl=noise_level, num_points=args.n_point_line_1)
+                noise_lvl=noise_level, num_points=args.n_point_line_1
+            )
 
-            coordinates += generate_line(args,
-                slope=args.line_2_slope,
+            coordinates += generate_line(
+                args, slope=args.line_2_slope,
                 intercept=args.line_2_intercept-offset,
-                noise_lvl=noise_level, num_points=args.n_point_line_2)
+                noise_lvl=noise_level, num_points=args.n_point_line_2
+            )
 
             image = generate_image(coordinates, args)
             edges = np.array(image)
