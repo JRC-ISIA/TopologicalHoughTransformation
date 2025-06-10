@@ -1,3 +1,13 @@
+"""
+experiment_1.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Experiment to compare the performance of the Topological Hough
+Transform against the baseline OpenCV Hough Transform in terms of
+precision and recall for different noise levels.
+Note: This experiment was not part of the publication.
+License: MIT
+"""
 import logging
 import os
 import random
@@ -6,17 +16,17 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from topologicalhoughtransform.TopologicalHoughTransform import \
+from topologicalhoughtransform.topological_hough_transform import \
     TopologicalHoughTransform
 from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.math import \
+from topologicalhoughtransform.utils.transform import \
     slope_intercept_to_rho_theta, line_to_pts
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.colors import pth_color
 from utils.parser import create_parser
 from utils.plotting import draw_dashed_line, draw_lines_on_image, \
     plot_hough_with_loci, plot_persistence_diagram
-from utils.test_data_generator import (generate_image, generate_line)
+from utils.data_generator import (generate_image, generate_line)
 
 
 if __name__ == '__main__':
@@ -126,9 +136,9 @@ if __name__ == '__main__':
     logging.debug(f"Confusion Matrices PH: {cms_PH}")
 
     with open(os.path.join(args.output_directory,
-                           "output_base.txt"), "a") as f:
+                           "output_base.txt"), "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices Baseline: {cms_baseline}\n")
 
     with open(os.path.join(args.output_directory,
-                           "output_ph.txt"), "a") as f:
+                           "output_ph.txt"), "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices PH: {cms_PH}\n")

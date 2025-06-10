@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from topologicalhoughtransform.TopologicalHoughTransform import \
+from topologicalhoughtransform.topological_hough_transform import \
     TopologicalHoughTransform
 from utils.parser import create_parser
-from utils.test_data_generator import generate_image, generate_line
+from utils.data_generator import generate_image, generate_line
 
 
 if __name__ == '__main__':

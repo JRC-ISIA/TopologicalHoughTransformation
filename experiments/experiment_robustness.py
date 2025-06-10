@@ -16,19 +16,19 @@ import seaborn as sns
 from PIL import Image
 
 from utils.baseline_hough_transform import baseline_detect_lines
-from topologicalhoughtransform.TopologicalHoughTransform import \
+from topologicalhoughtransform.topological_hough_transform import \
     TopologicalHoughTransform
 
 from utils.plotting import draw_lines_on_image, plot_hough_with_loci, \
     plot_persistence_diagram
-from utils.test_data_generator import (generate_image, generate_line)
+from utils.data_generator import (generate_image, generate_line)
 from topologicalhoughtransform.utils.eval import get_conf_matrix
 from topologicalhoughtransform.utils.transform import \
     slope_intercept_to_rho_theta
 
 if __name__ == '__main__':
     filenames = []
-    subfolder_path = './output_folder/'
+    subfolder_path = './out/experiment_robustness/'
     workingfolder_path = './temp/'
 
     intercept1 = 200
@@ -45,6 +45,7 @@ if __name__ == '__main__':
 
     cm_baseline = [[0, 0], [0, 0]]
     cm_PH = [[0, 0], [0, 0]]
+
 
     for noise_value in range(8, 10):
         for experiment_idx in range(0, 10):

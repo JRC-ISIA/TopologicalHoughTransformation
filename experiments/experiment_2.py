@@ -1,3 +1,13 @@
+"""
+experiment_2.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Experiment to compare the performance of the Topological Hough
+Transform against the baseline OpenCV Hough Transform in terms of
+precision and recall for different point counts of the second line.
+Note: This experiment was not part of the publication.
+License: MIT
+"""
 import logging
 import os
 import random
@@ -6,17 +16,17 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from utils.baseline_hough_transform import baseline_detect_lines
-from topologicalhoughtransform.TopologicalHoughTransform import \
+from topologicalhoughtransform.topological_hough_transform import \
     TopologicalHoughTransform
-from utils.parser import create_parser
-from utils.test_data_generator import generate_image, generate_line
-from utils.colors import pth_color_str, baseline_color_str, baseline_color
 from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.math import \
+from topologicalhoughtransform.utils.transform import \
     slope_intercept_to_rho_theta, line_to_pts
+from utils.baseline_hough_transform import baseline_detect_lines
+from utils.colors import pth_color_str, baseline_color_str, baseline_color
+from utils.parser import create_parser
 from utils.plotting import draw_dashed_line, draw_lines_on_image, \
     plot_hough_with_loci, plot_persistence_diagram
+from utils.data_generator import generate_image, generate_line
 
 if __name__ == '__main__':
     parser = create_parser()
@@ -32,7 +42,7 @@ if __name__ == '__main__':
     args.line_2_slope = args.line_1_slope = 1
     args.n_point_line_2 = args.n_point_line_1 = 500
 
-    noise_lvl = 3
+    args.noise_levels = [3]
 
     cms_baseline, cms_PH = [], []
 
@@ -54,14 +64,15 @@ if __name__ == '__main__':
             true_lines = [(rho1, theta1), (rho2, theta2)]
             logging.info(f"True line coordinates: {true_lines}")
 
-            coordinates = generate_line(
+            coordinates = generate_line(args=args,
                 slope=args.line_1_slope,
                 intercept=args.line_1_intercept+offset,
-                noise_lvl=noise_lvl, num_points=args.n_point_line_1)
-            coordinates += generate_line(
+                noise_lvl=args.noise_levels[0], num_points=args.n_point_line_1)
+
+            coordinates += generate_line(args=args,
                 slope=args.line_1_slope,
                 intercept=args.line_2_intercept-offset,
-                noise_lvl=noise_lvl, num_points=args.n_point_line_2)
+                noise_lvl=args.noise_levels[0], num_points=args.n_point_line_2)
 
             image = generate_image(coordinates)
             edges = np.array(image)
@@ -135,8 +146,9 @@ if __name__ == '__main__':
     logging.info(f"Confusion Matrices PH: {cms_PH}")
 
     with open(os.path.join(args.output_directory,
-                           "output_base.txt"), "a") as f:
+                           "output_base.txt"), "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices Baseline: {cms_baseline}\n")
 
-    with open(os.path.join(args.output_directory, "output_ph.txt"), "a") as f:
+    with open(os.path.join(args.output_directory, "output_ph.txt"),
+              "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices PH: {cms_PH}\n")

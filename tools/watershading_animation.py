@@ -14,7 +14,7 @@ import tqdm
 from topologicalhoughtransform.TopologicalHoughTransform import \
     TopologicalHoughTransform
 from PIL import Image
-from utils.test_data_generator import generate_image, generate_line
+from utils.data_generator import generate_image, generate_line
 
 
 def store_frame(xx, yy, im, filepath_):

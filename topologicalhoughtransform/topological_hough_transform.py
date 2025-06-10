@@ -14,7 +14,7 @@ from topologicalhoughtransform.ph.PersistenceHomologie import persistence
 from topologicalhoughtransform.utils.transform import rho_theta_to_slope_intercept
 
 
-class TopologicalHoughTransform(object):
+class TopologicalHoughTransform():
 
     def __init__(self, image, angle_step=1,
                  three_periods=False, value_threshold=5, pers_limit=150,
@@ -146,8 +146,8 @@ class TopologicalHoughTransform(object):
         for y, x in self.lines:
 
             # Theta und Rho to original coordinates
-            theta = (90 - x)
-            rho = (y - self.hough_image.shape[0] / 2)
+            theta = 90 - x
+            rho = y - self.hough_image.shape[0] / 2
 
             # inverse transformation
             k, d = rho_theta_to_slope_intercept((rho, theta))
@@ -161,7 +161,7 @@ class TopologicalHoughTransform(object):
                 # if line vertical, use all y values
                 y_coords = list(range(self.img.shape[0]))
             else:
-                y_c = (k * x_c + d)
+                y_c = k * x_c + d
                 # remove everything that is not in the image
                 x_coords, y_coords = zip(*[
                     (xi, yi) for xi, yi in zip(x_c, y_c)
@@ -172,6 +172,7 @@ class TopologicalHoughTransform(object):
 
 
 def moebius_neighborship_construction(p, w, h):
+    """Constructs a moebius strip neighborhood for a given point p in a grid"""
     logging.debug("Moebius strip construction is used, which may not be "
                   "suitable for all applications.")
     y, x = p

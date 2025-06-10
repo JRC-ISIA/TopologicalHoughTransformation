@@ -1,5 +1,5 @@
 """
-test_data_generator.py
+data_generator.py
 Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
 Date: June 2025
 Description: Methods to generate synthetic test data for image processing
