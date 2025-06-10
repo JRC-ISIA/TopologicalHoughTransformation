@@ -1,3 +1,10 @@
+"""
+setup.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Setup script for the Topological Hough Transform module.
+License: MIT
+"""
 from setuptools import setup, find_packages
 
 setup(

@@ -4,7 +4,6 @@ __author__ = "Stefan Huber <shuber@sthu.org>"
 
 
 class UnionFind:
-
     """Union-find data structure.
 
     Each unionFind instance X maintains a family of disjoint sets of
@@ -26,27 +25,27 @@ class UnionFind:
         self.weights = {}
         self.parents = {}
 
-    def add(self, object, weight):
-        if object not in self.parents:
-            self.parents[object] = object
-            self.weights[object] = weight
+    def add(self, obj, weight):
+        if obj not in self.parents:
+            self.parents[obj] = obj
+            self.weights[obj] = weight
 
-    def __contains__(self, object):
-        return object in self.parents
+    def __contains__(self, obj):
+        return obj in self.parents
 
-    def __getitem__(self, object):
+    def __getitem__(self, obj):
         """Find and return the name of the set containing the object."""
 
         # check for previously unknown object
-        if object not in self.parents:
+        if obj not in self.parents:
             assert False
-            self.parents[object] = object
-            self.weights[object] = 1
-            return object
+            self.parents[obj] = obj
+            self.weights[obj] = 1
+            return obj
 
         # find path of objects leading to the root
-        path = [object]
-        root = self.parents[object]
+        path = [obj]
+        root = self.parents[obj]
         while root != path[-1]:
             path.append(root)
             root = self.parents[root]
@@ -61,9 +60,9 @@ class UnionFind:
         """
         return iter(self.parents)
 
-    def union(self, *objects):
+    def union(self, *objs):
         """Find the sets containing the objects and merge them all."""
-        roots = [self[x] for x in objects]
+        roots = [self[x] for x in objs]
         heaviest = max([(self.weights[r], r) for r in roots])[1]
         for r in roots:
             if r != heaviest:

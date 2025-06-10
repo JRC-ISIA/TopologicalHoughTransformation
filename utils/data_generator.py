@@ -60,9 +60,9 @@ def generate_line(args, noise_lvl=5, slope=1, intercept=0,
 
         # Generate orthogonal noise components
         if equaldist:
-            noise_mag = (np.random.uniform(0, noise_lvl))
+            noise_mag = np.random.uniform(0, noise_lvl)
         else:
-            noise_mag = (np.random.normal(0, noise_lvl))
+            noise_mag = np.random.normal(0, noise_lvl)
 
         noise_x = int(noise_mag * dx)
         noise_y = int(noise_mag * dy)

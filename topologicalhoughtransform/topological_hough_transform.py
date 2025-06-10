@@ -10,7 +10,7 @@ import logging
 
 import numpy as np
 
-from topologicalhoughtransform.ph.PersistenceHomologie import persistence
+from topologicalhoughtransform.ph.persistence_homologie import persistence
 from topologicalhoughtransform.utils.transform import \
     rho_theta_to_slope_intercept
 

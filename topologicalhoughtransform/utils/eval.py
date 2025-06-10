@@ -1,3 +1,12 @@
+"""
+eval.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Utility functions for evaluating the performance of the
+Topological Hough Transform by calculating confusion matrices and
+finding the closest detected line to a true line.
+License: MIT
+"""
 import numpy as np
 
 

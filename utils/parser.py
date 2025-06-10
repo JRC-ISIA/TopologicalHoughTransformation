@@ -9,6 +9,8 @@ import argparse
 
 
 def create_parser():
+    """Create a parser for the command line arguments used in the
+    topological variant of the Hough Transform experiments."""
     parser = argparse.ArgumentParser(
         description="Parser for the experiments for the topological variant "
                     "of the hough transform.")

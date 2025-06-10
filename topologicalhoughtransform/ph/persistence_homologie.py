@@ -1,5 +1,5 @@
 import logging
-from topologicalhoughtransform.ph.UnionFind import UnionFind
+from topologicalhoughtransform.ph.union_find import UnionFind
 
 __author__ = "Stefan Huber <shuber@sthu.org>"
 
@@ -26,6 +26,8 @@ def _default_neighborship(p, w, h, eight_neighborship=True):
 
 
 def iter_neighbors(p, w, h, neighborship_construction=None):
+    """Iterate over the neighbors of a point p in a grid of width w and
+    height h."""
     if neighborship_construction is None:
         neighborship_construction = _default_neighborship
 

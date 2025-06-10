@@ -126,7 +126,7 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                         color='g', linestyle='-')
 
         for i, homclass in enumerate(tht.g0):
-            p_birth, bl, pers, p_death = homclass
+            p_birth, _, pers, _ = homclass
             if pers <= tht.pers_limit:
                 continue
             logging.debug(f"Line found with PH: {p_birth} ")
@@ -289,8 +289,8 @@ def plot_persistence_diagram(tht, ax=None, show_limit=False,
 
     point_index_counter = 1
 
-    for i, homclass in enumerate(tht.g0):
-        p_birth, bl, pers, p_death = homclass
+    for homclass in tht.g0:
+        p_birth, bl, pers, _ = homclass
         if three_periods:
             if p_birth[1] < tht.hough_image.shape[1]/3:
                 continue

@@ -15,16 +15,15 @@ import numpy as np
 import seaborn as sns
 from PIL import Image
 
-from utils.baseline_hough_transform import baseline_detect_lines
 from topologicalhoughtransform.topological_hough_transform import \
     TopologicalHoughTransform
-
-from utils.plotting import draw_lines_on_image, plot_hough_with_loci, \
-    plot_persistence_diagram
-from utils.data_generator import (generate_image, generate_line)
 from topologicalhoughtransform.utils.eval import get_conf_matrix
 from topologicalhoughtransform.utils.transform import \
     slope_intercept_to_rho_theta
+from utils.baseline_hough_transform import baseline_detect_lines
+from utils.data_generator import (generate_image, generate_line)
+from utils.plotting import draw_lines_on_image, plot_hough_with_loci, \
+    plot_persistence_diagram
 
 if __name__ == '__main__':
     filenames = []
