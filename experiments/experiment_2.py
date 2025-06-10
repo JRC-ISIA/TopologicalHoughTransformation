@@ -5,7 +5,6 @@ Date: June 2025
 Description: Experiment to compare the performance of the Topological Hough
 Transform against the baseline OpenCV Hough Transform in terms of
 precision and recall for different point counts of the second line.
-Note: This experiment was not part of the publication.
 License: MIT
 """
 import logging
@@ -64,17 +63,19 @@ if __name__ == '__main__':
             true_lines = [(rho1, theta1), (rho2, theta2)]
             logging.info(f"True line coordinates: {true_lines}")
 
-            coordinates = generate_line(args=args,
-                slope=args.line_1_slope,
-                intercept=args.line_1_intercept+offset,
-                noise_lvl=args.noise_levels[0], num_points=args.n_point_line_1)
+            coordinates = generate_line(
+                args=args, noise_lvl=args.noise_levels[0],
+                slope=args.line_1_slope, num_points=args.n_point_line_1,
+                intercept=args.line_1_intercept+offset
+            )
 
-            coordinates += generate_line(args=args,
-                slope=args.line_1_slope,
-                intercept=args.line_2_intercept-offset,
-                noise_lvl=args.noise_levels[0], num_points=args.n_point_line_2)
+            coordinates += generate_line(
+                args=args, noise_lvl=args.noise_levels[0],
+                slope=args.line_1_slope, num_points=args.n_point_line_2,
+                intercept=args.line_2_intercept-offset
+            )
 
-            image = generate_image(coordinates)
+            image = generate_image(coordinates, args)
             edges = np.array(image)
             original_image = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 

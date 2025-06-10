@@ -11,10 +11,30 @@ import logging
 import numpy as np
 
 from topologicalhoughtransform.ph.PersistenceHomologie import persistence
-from topologicalhoughtransform.utils.transform import rho_theta_to_slope_intercept
+from topologicalhoughtransform.utils.transform import \
+    rho_theta_to_slope_intercept
 
 
 class TopologicalHoughTransform():
+    """
+    Topological Hough Transform class that performs the Hough
+    transformation on a given image and extracts lines using
+    persistence homology.
+    The class supports both standard and three-period Hough
+    transformations, with options for angle step, value threshold,
+    persistence limit, and normalization of the Hough image.
+    Parameters:
+        image (np.ndarray): Input image to be processed.
+        angle_step (int): Step size for the angle in degrees.
+        three_periods (bool): Whether to use a three-period Hough
+            transformation (default is False).
+        value_threshold (int): Threshold for edge detection in the
+            Hough transformation (default is 5).
+        pers_limit (int): Persistence limit for filtering lines
+            (default is 150).
+        normalize (bool): Whether to normalize the Hough image
+            (default is True).
+    """
 
     def __init__(self, image, angle_step=1,
                  three_periods=False, value_threshold=5, pers_limit=150,

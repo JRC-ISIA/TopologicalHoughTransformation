@@ -18,7 +18,7 @@ from matplotlib.lines import Line2D
 
 
 def display_image_with_wireframe_and_pointlines(data):
-    # Function to display the image with wireframe and pointlines overlay
+    """Function to display the image with wireframe and pointlines overlay."""
 
     # Extract necessary data
     image = data['img']
@@ -57,8 +57,7 @@ def display_image_with_wireframe_and_pointlines(data):
     return image
 
 
-def draw_dashed_line(image, pt1, pt2, color=(0, 0, 255),
-                     thickness=2, dash_length=20):
+def draw_dashed_line(image, pt1, pt2, color=(0, 0, 255), thickness=2):
     """
     Draws a dashed line between pt1 and pt2 on the given image.
 
@@ -80,7 +79,7 @@ def draw_dashed_line(image, pt1, pt2, color=(0, 0, 255),
 
 
 def draw_lines_on_image(tht):
-    # Make a copy of the image to avoid modifying the original
+    """Make a copy of the image to avoid modifying the original."""
     img_with_lines = 255 - tht.img.copy()
 
     # Check if the image is grayscale and convert it to BGR to draw
@@ -95,9 +94,9 @@ def draw_lines_on_image(tht):
     return img_with_lines
 
 
-# Hough-Diagramm mit Loci plotten
 def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                          my_ax=None, legend=True):
+    """Plot the Hough transform image with loci and lines."""
     corr_true_lines = []
     corr_other_lines = []
     # Plote Tranformiertes bild
@@ -134,7 +133,7 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
         if other_lines is not None:
             for i in range(0, len(other_lines)):
                 # why -1?
-                y = (-1 * other_lines[i][0][0] + tht.hough_image.shape[0] / 2)
+                y = -1 * other_lines[i][0][0] + tht.hough_image.shape[0] / 2
                 x = np.rad2deg(other_lines[i][0][1]) - 90
                 corr_other_lines.append([y, x])
                 if tht.three_periods:
@@ -143,8 +142,8 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                 logging.debug(f"opencv base lines transformed {x, y}")
         if true_lines is not None:
             for line in true_lines:
-                y = (line[0] * (-1) + tht.hough_image.shape[0] / 2)  # why -1?
-                x = (line[1] - 90)
+                y = line[0] * (-1) + tht.hough_image.shape[0] / 2  # why -1?
+                x = line[1] - 90
                 corr_true_lines.append([y, x])
                 if tht.three_periods:
                     x += 180
@@ -179,17 +178,16 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
 
         if true_lines is not None:
             for line in true_lines:
-                y = (-1 * line[0] + tht.hough_image.shape[0] / 2)  # why -1?
-                x = (line[1] - 90)
+                y = -1 * line[0] + tht.hough_image.shape[0] / 2  # why -1?
+                x = line[1] - 90
                 corr_true_lines.append([y, x])
                 ax.plot(x, y, 'x', c='black')
                 logging.debug(f"True lines transformed {x, y}")
 
         if other_lines is not None:
             for i in range(0, len(other_lines)):
-                y = (
-                        -1 * other_lines[i][0][0] + tht.hough_image.shape[0]/2
-                )  # why -1?
+                # why -1?
+                y = -1 * other_lines[i][0][0] + tht.hough_image.shape[0]/2
                 x = np.rad2deg(other_lines[i][0][1]) - 90
                 corr_other_lines.append([y, x])
                 ax.plot(x, y, 'v', c=baseline_color_str, alpha=0.3)

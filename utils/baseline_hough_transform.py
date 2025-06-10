@@ -14,8 +14,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
+from topologicalhoughtransform.utils.transform import line_to_pts
 from utils.colors import pth_color
-from topologicalhoughtransform.utils.math import line_to_pts
 from utils.plotting import display_image_with_wireframe_and_pointlines
 
 

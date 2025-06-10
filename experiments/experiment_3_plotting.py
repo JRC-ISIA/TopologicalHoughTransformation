@@ -1,8 +1,15 @@
+"""
+experiment_3_plotting.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Plotting script for the Lipschitz continuity experiment
+using matplotlib and pandas.
+License: MIT
+"""
 import matplotlib.pyplot as plt
 import pandas as pd
 
-file_path = 'distance_experiment.csv'
-data = pd.read_csv(file_path)
+data = pd.read_csv('distance_experiment.csv')
 
 d_W = data.iloc[:, "W1 Image"]
 d_B = data.iloc[:, "dB Pers"]

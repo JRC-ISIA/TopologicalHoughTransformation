@@ -46,7 +46,6 @@ if __name__ == '__main__':
     cm_baseline = [[0, 0], [0, 0]]
     cm_PH = [[0, 0], [0, 0]]
 
-
     for noise_value in range(8, 10):
         for experiment_idx in range(0, 10):
             coordinates = generate_line(

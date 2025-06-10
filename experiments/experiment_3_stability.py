@@ -1,3 +1,11 @@
+"""
+experiment_3_stability.py
+Author: J. Ferner, S. Huber, S. Messineo, A. Pop, M. Uray
+Date: June 2025
+Description: Stability experiment for the Topological Hough Transform
+using the Lipschitz continuity property.
+License: MIT
+"""
 import logging
 import os
 import random
@@ -58,10 +66,10 @@ if __name__ == '__main__':
                     if (x, y) == selected_point else
                     (x, y) for x, y in coordinates
                 ]
-                logging.debug(f"Updated points: {coordinates}")
                 w1_dist += np.abs(delta_y)
 
-            logging.debug(f"# of moved Points: {move_point_idx}, run:{sim_run}")
+            logging.debug("# of moved Points: %d; run: %d",
+                          move_point_idx, sim_run)
 
             image = generate_image(coordinates, args)
             edges = np.array(image)
@@ -92,7 +100,8 @@ if __name__ == '__main__':
 
                 # Compute Bottleneck Distance of Persistence Arrays
                 dB_pd = gd.bottleneck_distance(dgm1, dgm2)
-                logging.debug(f"Bottleneck Distance $d_B$ in Hough Space: {dB_pd}")
+                logging.debug("Bottleneck Distance $d_B$ in Hough Space: %f",
+                              dB_pd)
                 db_distances_pd.append(dB_pd)
 
                 # Compute Bottleneck Distance of Input images ($d_B$ between
@@ -102,7 +111,8 @@ if __name__ == '__main__':
 
                 # Compute Bottleneck Distance
                 dB_img = gd.bottleneck_distance(dgm1_inp, dgm2_inp)
-                logging.debug(f"Bottleneck Distance $d_B$ in Image Space: {dB_img}")
+                logging.debug("Bottleneck Distance $d_B$ in Image Space: %f",
+                              dB_img)
                 db_distances_img.append(dB_img)
 
                 w1_distances.append(w1_dist)

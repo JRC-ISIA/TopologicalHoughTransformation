@@ -5,7 +5,6 @@ Date: June 2025
 Description: Experiment to compare the performance of the Topological Hough
 Transform against the baseline OpenCV Hough Transform in terms of
 precision and recall for different noise levels.
-Note: This experiment was not part of the publication.
 License: MIT
 """
 import logging
@@ -49,7 +48,8 @@ if __name__ == '__main__':
         cm_PH = [[0, 0], [0, 0]]
 
         for sim_run in range(args.num_sim_rounds):
-            logging.info(f"Noiselvl: {noise_level}, run:{sim_run}\n")
+            logging.debug("Noiselvl: %d; run: %d",
+                          noise_level, sim_run)
 
             offset = random.randint(50, 100)
 
@@ -59,19 +59,20 @@ if __name__ == '__main__':
                 (args.line_2_slope, args.line_2_intercept - offset))
 
             true_lines = [(rho1, theta1), (rho2, theta2)]
-            logging.debug(f"True line coordinates: {true_lines}")
+            logging.debug("True line coordinates at (%f, %f), (%f, %f)",
+                          rho1, theta1, rho2, theta2)
 
-            coordinates = generate_line(
+            coordinates = generate_line(args,
                 slope=args.line_1_slope,
                 intercept=args.line_1_intercept+offset,
                 noise_lvl=noise_level, num_points=args.n_point_line_1)
 
-            coordinates += generate_line(
+            coordinates += generate_line(args,
                 slope=args.line_2_slope,
                 intercept=args.line_2_intercept-offset,
                 noise_lvl=noise_level, num_points=args.n_point_line_2)
 
-            image = generate_image(coordinates)
+            image = generate_image(coordinates, args)
             edges = np.array(image)
             original_image = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
@@ -110,7 +111,8 @@ if __name__ == '__main__':
                                      f'plot_{noise_level}{sim_run}.png'))
 
             for line in lines:
-                logging.debug(f"Lines found with opencv: {line}")
+                logging.debug("Lines found with opencv: (%f, %f)",
+                              line[0], line[1])
 
             cm = get_conf_matrix(noise_level, my_true_lines, my_other_lines)
             cm_baseline = [
