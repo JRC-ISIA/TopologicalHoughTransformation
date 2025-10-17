@@ -12,6 +12,11 @@ import numpy as np
 from PIL import Image
 
 
+def _round_np_to_int(arr):
+    """Round numpy array to integers."""
+    return np.round(arr).astype(np.int32)
+
+
 def rgb2gray(rgb):
     """Convert RGB image to grayscale using the luminosity method."""
     return np.dot(rgb[..., :3], [0.299, 0.587, 0.114]).astype(np.uint8)
@@ -21,22 +26,20 @@ def generate_image(coordinates, args):
     """Create a black image and insert coordinates as white pixels."""
     image = Image.new('L', (args.image_width, args.image_height), 0)
 
-    if coordinates is None:
-        for x in range(args.image_width):
-            for y in range(args.image_height):
-                image.putpixel((x, y), 255)
-    else:
-        for x, y in coordinates:
-            image.putpixel((x, y), 255)  # Set pixel to white
+    for c in coordinates:
+        image.putpixel(c, 255)  # Set pixel to white
+
     return image
 
 
 def generate_noise(args, num_points=100):
     """Generate random white points in the image."""
-    coordinates = [(random.randint(0, args.image_width - 1),
-                    random.randint(0, args.image_height - 1)) for _ in
-                   range(num_points)]
-    return coordinates
+    coordinates = np.random.randint(
+        low=0,
+        high=args.image_width-1,
+        size=(num_points, 2)
+    ).astype(np.uint8)
+    return coordinates.tolist()
 
 
 def point_in_image(x, y, args):
@@ -48,34 +51,52 @@ def generate_line(args, noise_lvl=5, slope=1, intercept=0,
                   num_points=100, equaldist=False):
     """Generate coordinates for a line with noise."""
 
-    theta = np.arctan(slope)  # Calculate angle of line
+    def _get_point_coord_in_img(args, noise_lvl, slope, num_points, equaldist):
+        theta = np.arctan(slope)  # Calculate angle of line
 
-    point_coordinates = []
-    # Calculate orthogonal direction components
-    dx = np.sin(theta)  # Component along x that's orthogonal to line
-    dy = -np.cos(theta)  # Component along y that's orthogonal to line
+        # Calculate orthogonal direction components
+        dx = np.sin(theta)  # Component along x that's orthogonal to line
+        dy = -np.cos(theta)  # Component along y that's orthogonal to line
 
-    while len(point_coordinates) < num_points:
-        x = random.randint(0, args.image_width - 1)
+        x = np.random.randint(low=0, high=args.image_width-1, size=num_points)
+        if noise_lvl == 0:
+            assert num_points <= args.image_width, \
+                "Number of points exceeds image width for zero noise level."
+            x = np.arange(0, args.image_width)
+            x = np.random.permutation(x)[:num_points]
 
         # Generate orthogonal noise components
         if equaldist:
-            noise_mag = np.random.uniform(0, noise_lvl)
+            noise_mag = np.random.uniform(low=0, high=noise_lvl, size=num_points)
         else:
-            noise_mag = np.random.normal(0, noise_lvl)
+            noise_mag = np.random.normal(loc=0, scale=noise_lvl, size=num_points)
 
-        noise_x = int(noise_mag * dx)
-        noise_y = int(noise_mag * dy)
+        noise_x, noise_y = noise_mag * dx, noise_mag * dy
+        noise_x, noise_y = _round_np_to_int(noise_x), _round_np_to_int(noise_y)
 
-        # Calculate new x and y considering the noise
         new_x = x + noise_x
-        new_y = int(slope * x + intercept) + noise_y
+        new_y = _round_np_to_int(slope * x + intercept) + noise_y
 
-        # Check if the point is within image boundaries
-        if point_in_image(new_x, new_y, args):
-            # Check before appending
-            if (new_x, new_y) not in point_coordinates:
-                point_coordinates.append((new_x, new_y))
+        point_coordinates = np.stack((new_x, new_y), axis=1)
+
+        # check for duplicate points
+        point_coordinates = np.unique(point_coordinates, axis=0)
+
+        # check if all points are in the image
+        in_img = np.apply_along_axis(
+            lambda point: point_in_image(point[0], point[1], args),
+            1, point_coordinates
+        )
+        point_coordinates = point_coordinates[in_img]
+        return point_coordinates
+
+    point_coordinates = []
+    while len(point_coordinates) < num_points:
+        pts = _get_point_coord_in_img(args, noise_lvl, slope,
+                                    num_points-len(point_coordinates),
+                                    equaldist).tolist()
+
+        point_coordinates.extend(pts)
 
     return point_coordinates
 
