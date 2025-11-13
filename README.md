@@ -49,7 +49,7 @@ module. The experiments are located in the `experiments` folder and can be run
 directly. Run the main experiments, as described in the initial publication [1] 
 using:
 ```bash
-python experiments/experiment_1.py --output_directory results --log_level INFO
+python experiments/experiment_1.py --output-directory results --log-level INFO
 ```
 
 #### Arguments
@@ -64,7 +64,7 @@ The same applies also to the other experiments.
 
 #### Example
 ```bash
-python experiments/experiment_1.py --output_directory results --noise_levels 0.1 0.2 0.3 --num_sim_rounds 10
+python experiments/experiment_1.py --output-directory results --noise-levels 1 2 3 --num-sim-rounds 10
 ```
 
 
