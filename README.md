@@ -53,8 +53,8 @@ python experiments/experiment_1.py --output-directory results --log-level INFO
 ```
 
 #### Arguments
-- `--output_directory`: Directory to save results.
-- `--log_level`: Logging level (e.g., `INFO`, `DEBUG`).
+- `--output-directory`: Directory to save results.
+- `--log-level`: Logging level (e.g., `INFO`, `DEBUG`).
 - Additional arguments can be found in the `create_parser` function in `utils/parser.py` and are listed using
 ```bash
 python experiments/experiment_1.py --help
