@@ -130,14 +130,14 @@ if __name__ == '__main__':
                 for i in range(len(cm_PH))
             ]
 
-        logging.info(f"Confusion Matrix Baseline for "
-                     f"noise level={noise_level}: {cm_baseline}")
-        logging.info(f"Confusion Matrix PH for d={noise_level}: {cm_PH}")
+        logging.info("Confusion Matrix Baseline for "
+                     "noise level=%s: %s", noise_level, cm_baseline)
+        logging.info("Confusion Matrix PH for d=%s: %s", noise_level, cm_PH)
         cms_PH.append(cm_PH)
         cms_baseline.append(cm_baseline)
 
-    logging.debug(f"Confusion Matrices Baseline: {cms_baseline}")
-    logging.debug(f"Confusion Matrices PH: {cms_PH}")
+    logging.debug("Confusion Matrices Baseline: %s", cms_baseline)
+    logging.debug("Confusion Matrices PH: %s", cms_PH)
 
     with open(os.path.join(args.output_directory,
                            "output_base.txt"), "a", encoding='utf-8') as f:

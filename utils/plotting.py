@@ -129,7 +129,7 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
             p_birth, _, pers, _ = homclass
             if pers <= tht.pers_limit:
                 continue
-            logging.debug(f"Line found with PH: {p_birth} ")
+            logging.debug("Line found with PH: %s ", p_birth)
 
         if other_lines is not None:
             for i in range(0, len(other_lines)):
@@ -140,7 +140,7 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                 if tht.three_periods:
                     x += 180
                 ax.plot(x, y, 'v', c='yellow', alpha=0.3)
-                logging.debug(f"opencv base lines transformed {x, y}")
+                logging.debug("opencv base lines transformed %s", (x, y))
         if true_lines is not None:
             for line in true_lines:
                 y = line[0] * (-1) + tht.hough_image.shape[0] / 2  # why -1?
@@ -149,7 +149,7 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                 if tht.three_periods:
                     x += 180
                 ax.plot(x, y, 'x', c='fuchsia')
-                logging.debug(f"True lines transformed {x, y}")
+                logging.debug("True lines transformed %s", (x, y))
         plt.gca().invert_yaxis()
         change_axes(ax, tht.hough_image)
         if show == 'one' or show == 'all':
@@ -183,7 +183,7 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                 x = line[1] - 90
                 corr_true_lines.append([y, x])
                 ax.plot(x, y, 'x', c='black')
-                logging.debug(f"True lines transformed {x, y}")
+                logging.debug("True lines transformed %s", (x, y))
 
         if other_lines is not None:
             for i in range(0, len(other_lines)):
@@ -192,12 +192,12 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                 x = np.rad2deg(other_lines[i][0][1]) - 90
                 corr_other_lines.append([y, x])
                 ax.plot(x, y, 'v', c=baseline_color_str, alpha=0.3)
-                logging.debug(f"opencv base lines transformed {x, y}")
+                logging.debug("opencv base lines transformed %s", (x, y))
 
         corrected_found_lines = []
         for i, p_birth in enumerate(tht.lines):
             y, x = p_birth
-            logging.debug(f'Birth Locus: x={x}, y={y}')
+            logging.debug('Birth Locus: x=%s, y=%s', x, y)
 
             # x = x - 180
             if 0 <= x <= 180:
@@ -226,14 +226,14 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                     y = -y + im.shape[0]
                     x += 180
                     ax.plot([x], [y], '.', c='b')
-                    logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
+                    logging.debug('Corrected Birth Locus: x=%s, y=%s', x, y)
                 corrected_found_lines.append((y, x))
             elif 180 < x <= 270:
                 if show != 'three':
                     y = - y + im.shape[0]
                     x -= 180
                     ax.plot([x], [y], '.', c='b')
-                    logging.debug(f'Corrected Birth Locus: x={x}, y={y}')
+                    logging.debug('Corrected Birth Locus: x=%s, y=%s', x, y)
                 corrected_found_lines.append((y, x))
 
         found_lines = corrected_found_lines

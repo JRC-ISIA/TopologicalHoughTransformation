@@ -123,9 +123,9 @@ if __name__ == '__main__':
 
                 w1_distances.append(int(np.abs(w1_dist).sum()))
 
-    logging.info(f"d_B Distance Hough Space: {db_distances_pd}")
-    logging.info(f"d_B Distance Image Space: {db_distances_img}")
-    logging.info(f"W1 Distance Image Space: {w1_distances}")
+    logging.info("d_B Distance Hough Space: %s", db_distances_pd)
+    logging.info("d_B Distance Image Space: %s", db_distances_img)
+    logging.info("W1 Distance Image Space: %s", w1_distances)
 
     # Create a DataFrame
     df = pd.DataFrame({
@@ -140,4 +140,4 @@ if __name__ == '__main__':
 
     # Save to CSV
     df.to_csv(csv_file_path, index=False)
-    logging.info(f"CSV file saved as {csv_file_path}")
+    logging.info("CSV file saved as %s", csv_file_path)

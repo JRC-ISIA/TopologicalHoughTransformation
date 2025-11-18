@@ -50,8 +50,8 @@ if __name__ == '__main__':
         cm_PH = [[0, 0], [0, 0]]
 
         for sim_run in range(0, args.num_sim_rounds):
-            logging.info(f"Pointcount Line 2: {args.n_point_line_2}, "
-                         f"run:{sim_run}")
+            logging.info("Pointcount Line 2: %s, "
+                         "run:%s", args.n_point_line_2, sim_run)
             offset = random.randint(50, 100)
 
             rho1, theta1 = slope_intercept_to_rho_theta(
@@ -61,7 +61,7 @@ if __name__ == '__main__':
                 (args.line_2_slope, args.line_2_intercept - offset))
 
             true_lines = [(rho1, theta1), (rho2, theta2)]
-            logging.info(f"True line coordinates: {true_lines}")
+            logging.info("True line coordinates: %s", true_lines)
 
             coordinates = generate_line(
                 args=args, noise_lvl=args.noise_levels[0],
@@ -133,18 +133,18 @@ if __name__ == '__main__':
             )
 
             for line in lines:
-                logging.debug(f"Lines found with opencv: {line}")
+                logging.debug("Lines found with opencv: %s", line)
 
-        logging.debug(f"Confusion Matrix Baseline for "
-                      f"point count line 2={args.n_point_line_2}: "
-                      f"{cm_baseline}")
-        logging.debug(f"Confusion Matrix PH for "
-                      f"point count line 2={args.n_point_line_2}: {cm_PH}")
+        logging.debug("Confusion Matrix Baseline for "
+                      "point count line 2=%s: "
+                      "%s", args.n_point_line_2, cm_baseline)
+        logging.debug("Confusion Matrix PH for "
+                      "point count line 2=%s: %s", args.n_point_line_2, cm_PH)
         cms_PH.append(cm_PH)
         cms_baseline.append(cm_baseline)
 
-    logging.info(f"Confusion Matrices Baseline: {cms_baseline}")
-    logging.info(f"Confusion Matrices PH: {cms_PH}")
+    logging.info("Confusion Matrices Baseline: %s", cms_baseline)
+    logging.info("Confusion Matrices PH: %s", cms_PH)
 
     with open(os.path.join(args.output_directory,
                            "output_base.txt"), "a", encoding='utf-8') as f:
