@@ -31,6 +31,11 @@ An alternative is to use the libraries sources. For this you need to have `git` 
    pip install -r requirements.txt
    ```
 
+2. Install the library itself:
+   ```bash
+   pip install .
+   ```
+
 ## Using the library module: Examples
 
 ### Generating a Persistence Diagram
