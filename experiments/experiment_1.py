@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
             for line in lines:
                 logging.debug("Lines found with opencv: (%f, %f)",
-                              line[0], line[1])
+                              line[0][0], line[0][1])
 
             cm = get_conf_matrix(noise_level, my_true_lines, my_other_lines)
             cm_baseline = [
