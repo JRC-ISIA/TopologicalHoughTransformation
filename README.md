@@ -72,6 +72,23 @@ The same applies also to the other experiments.
 python experiments/experiment_1.py --output-directory results --noise-levels 1 2 3 --num-sim-rounds 10
 ```
 
+To reproduce the experiment 1 from the paper, use the following arguments:
+```bash
+python experiments/experiment_1.py --num-sim-rounds 10 --noise-levels 4 5 6 7 8 9 10 11 12 13 14 15
+```
+Experiment 2 can be reproduced by just running the corresponding python script:
+```bash
+python experiments/experiment_2.py
+```
+Experiment 3 is split into two parts. First, you run the stability experiment that generates a csv file:
+```bash
+python experiments/experiment_3_stability.py
+```
+Afterwards, you can run the plotting script.
+```bash
+python experiments/experiment_3_plotting.py
+```
+
 
 ## Contributing
 
