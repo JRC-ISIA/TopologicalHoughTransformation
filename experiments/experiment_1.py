@@ -118,16 +118,16 @@ if __name__ == '__main__':
 
             cm = get_conf_matrix(noise_level, my_true_lines, my_other_lines)
             cm_baseline = [
-                [cm_baseline[noise_idx][j] + cm[noise_idx][j]
-                 for j in range(len(cm_baseline[noise_idx]))]
-                for i in range(len(cm_baseline))]
+                [cm_baseline[i][j] + cm[i][j]
+                 for j, _ in enumerate(cm_baseline[i])]
+                for i, _ in enumerate(cm_baseline)]
 
             cm = get_conf_matrix(noise_level, my_true_lines,
                                  hough_transformer.get_lines())
             cm_PH = [
-                [cm_PH[noise_idx][j] + cm[noise_idx][j]
-                 for j in range(len(cm_PH[noise_idx]))]
-                for i in range(len(cm_PH))
+                [cm_PH[i][j] + cm[i][j]
+                 for j, _ in enumerate(cm_PH[i])]
+                for i, _ in enumerate(cm_PH)
             ]
 
         logging.info("Confusion Matrix Baseline for "
