@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     cms_baseline, cms_PH = [], []
 
-    for n_pt_idx, args.n_point_line_2 in enumerate(range(200, 190, -50)):
+    for n_pt_idx, args.n_point_line_2 in enumerate(range(500, 0, -50)):
         cm_baseline = [[0, 0], [0, 0]]
         cm_PH = [[0, 0], [0, 0]]
 
