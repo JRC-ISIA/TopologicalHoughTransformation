@@ -114,30 +114,30 @@ if __name__ == '__main__':
 
             for line in lines:
                 logging.debug("Lines found with opencv: (%f, %f)",
-                              line[0], line[1])
+                              line[0][0], line[0][1])
 
             cm = get_conf_matrix(noise_level, my_true_lines, my_other_lines)
             cm_baseline = [
-                [cm_baseline[noise_idx][j] + cm[noise_idx][j]
-                 for j in range(len(cm_baseline[noise_idx]))]
-                for i in range(len(cm_baseline))]
+                [cm_baseline[i][j] + cm[i][j]
+                 for j, _ in enumerate(cm_baseline[i])]
+                for i, _ in enumerate(cm_baseline)]
 
             cm = get_conf_matrix(noise_level, my_true_lines,
                                  hough_transformer.get_lines())
             cm_PH = [
-                [cm_PH[noise_idx][j] + cm[noise_idx][j]
-                 for j in range(len(cm_PH[noise_idx]))]
-                for i in range(len(cm_PH))
+                [cm_PH[i][j] + cm[i][j]
+                 for j, _ in enumerate(cm_PH[i])]
+                for i, _ in enumerate(cm_PH)
             ]
 
-        logging.info(f"Confusion Matrix Baseline for "
-                     f"noise level={noise_level}: {cm_baseline}")
-        logging.info(f"Confusion Matrix PH for d={noise_level}: {cm_PH}")
+        logging.info("Confusion Matrix Baseline for "
+                     "noise level=%s: %s", noise_level, cm_baseline)
+        logging.info("Confusion Matrix PH for d=%s: %s", noise_level, cm_PH)
         cms_PH.append(cm_PH)
         cms_baseline.append(cm_baseline)
 
-    logging.debug(f"Confusion Matrices Baseline: {cms_baseline}")
-    logging.debug(f"Confusion Matrices PH: {cms_PH}")
+    logging.debug("Confusion Matrices Baseline: %s", cms_baseline)
+    logging.debug("Confusion Matrices PH: %s", cms_PH)
 
     with open(os.path.join(args.output_directory,
                            "output_base.txt"), "a", encoding='utf-8') as f:

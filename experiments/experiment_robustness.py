@@ -24,11 +24,19 @@ from utils.baseline_hough_transform import baseline_detect_lines
 from utils.data_generator import (generate_image, generate_line)
 from utils.plotting import draw_lines_on_image, plot_hough_with_loci, \
     plot_persistence_diagram
+from utils.parser import create_parser
 
 if __name__ == '__main__':
+    # Create parser and get args
+    parser = create_parser()
+    args = parser.parse_args()
+    
     filenames = []
-    subfolder_path = './out/experiment_robustness/'
-    workingfolder_path = './temp/'
+    
+    # Use output directory from args
+    output_dir = getattr(args, 'output_directory', './out/')
+    subfolder_path = os.path.join(output_dir, 'experiment_robustness')
+    workingfolder_path = os.path.join(subfolder_path, 'individual_plots')
 
     intercept1 = 200
     intercept2 = 100
@@ -45,17 +53,22 @@ if __name__ == '__main__':
     cm_baseline = [[0, 0], [0, 0]]
     cm_PH = [[0, 0], [0, 0]]
 
+    print(f"Running robustness experiment...")
+    print(f"Output will be saved to: {subfolder_path}")
+    
     for noise_value in range(8, 10):
+        print(f"Testing noise level: {noise_value}")
         for experiment_idx in range(0, 10):
+            print(f"  Experiment {experiment_idx + 1}/10 for noise level {noise_value}")
             coordinates = generate_line(
-                slope=slope, intercept=intercept1,
+                args=args, slope=slope, intercept=intercept1,
                 noise_lvl=noise_value, num_points=150)
 
             coordinates += generate_line(
-                slope=slope, intercept=intercept2,
+                args=args, slope=slope, intercept=intercept2,
                 noise_lvl=noise_value, num_points=120)
 
-            image = generate_image(coordinates)
+            image = generate_image(coordinates, args)
             edges = np.array(image)
             original_image = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
@@ -84,15 +97,14 @@ if __name__ == '__main__':
                 show='none', my_ax=axs[2][1]
             )
 
-            cm = get_conf_matrix(my_true_lines, my_other_lines,
-                                 hough_transformer.get_lines())
+            cm = get_conf_matrix(noise_value, my_true_lines, my_other_lines)
             cm_baseline = [
                 [cm_baseline[i][j] + cm[i][j]
                  for j in range(len(cm_baseline[i]))]
                 for i in range(len(cm_baseline))
             ]
 
-            cm = get_conf_matrix(0, my_true_lines,
+            cm = get_conf_matrix(noise_value, my_true_lines,
                                  hough_transformer.get_lines())
             cm_PH = [
                 [cm_PH[i][j] + cm[i][j]
@@ -101,21 +113,32 @@ if __name__ == '__main__':
             ]
 
             plt.tight_layout()
-            plt.savefig(workingfolder_path+filename)
-            filenames.append(filename)
-            plt.show()
-            plt.close()
+            full_filepath = os.path.join(workingfolder_path, filename)
+            plt.savefig(full_filepath, dpi=150, bbox_inches='tight')
+            filenames.append(filename)  # Keep just filename for later use
+            plt.close()  # Remove plt.show() to avoid blocking
 
-            for line in lines:
-                print(f"Lines found with opencv: {line}")
+            if args.log_level == "DEBUG":
+                for line in lines:
+                    print(f"Lines found with opencv: {line}")
 
+    # Print experiment summary
+    print(f"\nExperiment Summary:")
+    print(f"Individual plots saved in: {workingfolder_path}")
+    print(f"Total plots created: {len(filenames)}")
+    print(f"Baseline confusion matrix: {cm_baseline}")
+    print(f"PH method confusion matrix: {cm_PH}")
+
+    # Create GIF from individual plots
+    print(f"Creating animated GIF from {len(filenames)} individual plots...")
     images = [
         Image.open(os.path.join(workingfolder_path, filename))
         for filename in filenames
     ]
-    images[0].save(os.path.join(subfolder_path, 'plots.gif'),
-                   save_all=True, append_images=images[1:], optimize=False,
-                   duration=700, loop=0)
+    gif_path = os.path.join(subfolder_path, 'robustness_animation.gif')
+    images[0].save(gif_path, save_all=True, append_images=images[1:], 
+                   optimize=False, duration=700, loop=0)
+    print(f"Animated GIF saved to: {gif_path}")
 
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
     fig.suptitle('Line search results: ')
@@ -141,6 +164,7 @@ if __name__ == '__main__':
     axs[1].set_title('Baseline method')
 
     plt.tight_layout()
-    plt.savefig(os.path.join(workingfolder_path, 'Confusion Matrix'))
-    plt.show()
+    confusion_matrix_path = os.path.join(subfolder_path, 'Confusion_Matrix_Results.png')
+    plt.savefig(confusion_matrix_path, dpi=300, bbox_inches='tight')
+    print(f"Confusion matrix results saved to: {confusion_matrix_path}")
     plt.close()

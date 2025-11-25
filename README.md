@@ -31,6 +31,11 @@ An alternative is to use the libraries sources. For this you need to have `git` 
    pip install -r requirements.txt
    ```
 
+2. Install the library itself:
+   ```bash
+   pip install .
+   ```
+
 ## Using the library module: Examples
 
 ### Generating a Persistence Diagram
@@ -49,12 +54,12 @@ module. The experiments are located in the `experiments` folder and can be run
 directly. Run the main experiments, as described in the initial publication [1] 
 using:
 ```bash
-python experiments/experiment_1.py --output_directory results --log_level INFO
+python experiments/experiment_1.py --output-directory results --log-level INFO
 ```
 
 #### Arguments
-- `--output_directory`: Directory to save results.
-- `--log_level`: Logging level (e.g., `INFO`, `DEBUG`).
+- `--output-directory`: Directory to save results.
+- `--log-level`: Logging level (e.g., `INFO`, `DEBUG`).
 - Additional arguments can be found in the `create_parser` function in `utils/parser.py` and are listed using
 ```bash
 python experiments/experiment_1.py --help
@@ -64,7 +69,24 @@ The same applies also to the other experiments.
 
 #### Example
 ```bash
-python experiments/experiment_1.py --output_directory results --noise_levels 0.1 0.2 0.3 --num_sim_rounds 10
+python experiments/experiment_1.py --output-directory results --noise-levels 1 2 3 --num-sim-rounds 10
+```
+
+To reproduce the experiment 1 from the paper, use the following arguments:
+```bash
+python experiments/experiment_1.py --num-sim-rounds 10 --noise-levels 4 5 6 7 8 9 10 11 12 13 14 15
+```
+Experiment 2 can be reproduced by just running the corresponding python script:
+```bash
+python experiments/experiment_2.py
+```
+Experiment 3 is split into two parts. First, you run the stability experiment that generates a csv file:
+```bash
+python experiments/experiment_3_stability.py
+```
+Afterwards, you can run the plotting script.
+```bash
+python experiments/experiment_3_plotting.py
 ```
 
 

@@ -58,7 +58,7 @@ if __name__ == '__main__':
         coordinates = generate_line(args, slope=args.line_1_slope,
                                     intercept=args.line_1_intercept,
                                     num_points=args.n_point_line_1,
-                                    noise_lvl=0)
+                                    noise_lvl=1)
 
         for move_point_nb in tqdm.tqdm(range(0, NUM_MOVE_POINTS)):
             if move_point_nb > 0:
@@ -68,8 +68,10 @@ if __name__ == '__main__':
 
                 delta_y = w1_dist[move_point_nb]
 
-                # Apply the change to the y-coordinate
-                coordinates[selected_point_idx][1] += delta_y
+                # Apply the change to the y-coordinate with bounds checking
+                new_y = coordinates[selected_point_idx][1] + delta_y
+                new_y = max(0, min(new_y, args.image_height - 1))
+                coordinates[selected_point_idx][1] = new_y
 
             logging.debug("# of moved Points: %d; run: %d",
                           move_point_nb, sim_run)
@@ -90,7 +92,7 @@ if __name__ == '__main__':
                 three_periods=True, normalize=False)
 
             pers_array = hough_transformer.get_persistence_array()
-            line_points = [(x, y + 1000) for x, y in line_points]
+            line_points = coordinates.copy()  # Use the actual coordinates
 
             if move_point_nb == 0:
                 pers_array_0 = pers_array
@@ -121,9 +123,9 @@ if __name__ == '__main__':
 
                 w1_distances.append(int(np.abs(w1_dist).sum()))
 
-    logging.info(f"d_B Distance Hough Space: {db_distances_pd}")
-    logging.info(f"d_B Distance Image Space: {db_distances_img}")
-    logging.info(f"W1 Distance Image Space: {w1_distances}")
+    logging.info("d_B Distance Hough Space: %s", db_distances_pd)
+    logging.info("d_B Distance Image Space: %s", db_distances_img)
+    logging.info("W1 Distance Image Space: %s", w1_distances)
 
     # Create a DataFrame
     df = pd.DataFrame({
@@ -138,4 +140,4 @@ if __name__ == '__main__':
 
     # Save to CSV
     df.to_csv(csv_file_path, index=False)
-    logging.info(f"CSV file saved as {csv_file_path}")
+    logging.info("CSV file saved as %s", csv_file_path)
