@@ -132,10 +132,10 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
             logging.debug("Line found with PH: %s ", p_birth)
 
         if other_lines is not None:
-            for i in range(0, len(other_lines)):
+            for i, line in enumerate(other_lines):
                 # why -1?
-                y = -1 * other_lines[i][0][0] + tht.hough_image.shape[0] / 2
-                x = np.rad2deg(other_lines[i][0][1]) - 90
+                y = -1 * line[0][0] + tht.hough_image.shape[0] / 2
+                x = np.rad2deg(line[0][1]) - 90
                 corr_other_lines.append([y, x])
                 if tht.three_periods:
                     x += 180
@@ -186,10 +186,10 @@ def plot_hough_with_loci(tht, show=all, true_lines=None, other_lines=None,
                 logging.debug("True lines transformed %s", (x, y))
 
         if other_lines is not None:
-            for i in range(0, len(other_lines)):
+            for i, line in enumerate(other_lines):
                 # why -1?
-                y = -1 * other_lines[i][0][0] + tht.hough_image.shape[0]/2
-                x = np.rad2deg(other_lines[i][0][1]) - 90
+                y = -1 * line[0][0] + tht.hough_image.shape[0]/2
+                x = np.rad2deg(line[0][1]) - 90
                 corr_other_lines.append([y, x])
                 ax.plot(x, y, 'v', c=baseline_color_str, alpha=0.3)
                 logging.debug("opencv base lines transformed %s", (x, y))
