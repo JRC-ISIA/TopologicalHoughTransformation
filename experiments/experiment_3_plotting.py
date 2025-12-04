@@ -41,38 +41,22 @@ def main():
     d_B_img = data["dB Img"]
     
     # Create plots
-    fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+    fig, axs = plt.subplots(2, 1, figsize=(12, 10))
     
     # Plot 1: W1 vs dB Persistence
-    axs[0,0].scatter(d_W, d_B, c='blue', alpha=0.7, s=20)
-    axs[0,0].set_xlabel('$d_W$ (W1 Distance in Image Space)')
-    axs[0,0].set_ylabel('$d_B$ (Bottleneck Distance in Persistence Space)')
-    axs[0,0].set_title('Stability: W1 vs Bottleneck Distance')
-    axs[0,0].grid(True, alpha=0.3)
-    
-    # Plot 2: W1 vs dB Image (log scale due to very small values)
-    axs[0,1].scatter(d_W, d_B_img, c='green', alpha=0.7, s=20)
-    axs[0,1].set_xlabel('$d_W$ (W1 Distance in Image Space)')
-    axs[0,1].set_ylabel('$d_B$ (Bottleneck Distance in Image Space)')
-    axs[0,1].set_title('W1 vs Bottleneck Distance (Image Space)')
-    axs[0,1].set_yscale('log')
-    axs[0,1].grid(True, alpha=0.3)
+    axs[0].scatter(d_W, d_B, c='blue', alpha=0.7, s=20)
+    axs[0].set_xlabel('$d_W$ on input ')
+    axs[0].set_ylabel('$d_B$ on PD')
+    axs[0].set_title('$d_B$ plotted over $d_W$')
+    axs[0].grid(True, alpha=0.3)
     
     # Plot 3: Ratio plot (W1/dB_Pers)
-    ratio = d_W / d_B
-    axs[1,0].scatter(d_W, ratio, c='red', alpha=0.7, s=20)
-    axs[1,0].set_xlabel('$d_W$ (W1 Distance in Image Space)')
-    axs[1,0].set_ylabel('$d_W / d_B$ (Ratio)')
-    axs[1,0].set_title('Lipschitz Ratio: W1 / Bottleneck Distance')
-    axs[1,0].grid(True, alpha=0.3)
-    
-    # Plot 4: dB Persistence vs dB Image
-    axs[1,1].scatter(d_B, d_B_img, c='purple', alpha=0.7, s=20)
-    axs[1,1].set_xlabel('$d_B$ (Bottleneck Distance in Persistence Space)')
-    axs[1,1].set_ylabel('$d_B$ (Bottleneck Distance in Image Space)')
-    axs[1,1].set_title('Persistence vs Image Space Distances')
-    axs[1,1].set_yscale('log')
-    axs[1,1].grid(True, alpha=0.3)
+    ratio = d_B / d_W
+    axs[1].scatter(d_W, ratio, c='red', alpha=0.7, s=20)
+    axs[1].set_xlabel('$d_W$ on input')
+    axs[1].set_ylabel('ratio')
+    axs[1].set_title('$d_B / d_W$ plotted over $d_W$')
+    axs[1].grid(True, alpha=0.3)
     
     plt.tight_layout()
     
