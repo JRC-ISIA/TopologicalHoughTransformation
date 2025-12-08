@@ -9,8 +9,6 @@ import logging
 import os
 import random
 import tqdm
-import scipy.ndimage
-
 import cv2
 import gudhi as gd
 import matplotlib.pyplot as plt
@@ -42,25 +40,25 @@ if __name__ == '__main__':
 
     for sim_run in tqdm.tqdm(range(args.num_sim_rounds), desc="Simulation"):
         
+        # 1. Pre-calculate deltas
         w1_deltas_array = np.array(
             [generate_rand_y_delta() for _ in range(NUM_MOVE_POINTS)]
         )
 
+        # 2. Generate Initial Line
+        # (Cap points to image width to prevent indexing crashes)
         coordinates = generate_line(args, slope=args.line_1_slope,
                                     intercept=args.line_1_intercept,
                                     num_points=min(args.n_point_line_1, args.image_width),
                                     noise_lvl=0)
         
+        # 3. Establish Baseline (State 0)
         base_image = generate_image(coordinates, args)
         
-        base_image_arr = np.array(base_image).astype(float)
-        base_image_smooth = scipy.ndimage.gaussian_filter(base_image_arr, sigma=1.0)
         
-        # With smoothing, the peak intensity drops. We gotta lower the threshold
-        # from 150 to 10 to ensure we still detect the line.
         hough_transformer = TopologicalHoughTransform(
-            base_image_smooth, 
-            value_threshold=10,  
+            base_image, 
+            value_threshold=150,  
             pers_limit=120,
             three_periods=True, normalize=False)
         pers_array_0 = hough_transformer.get_persistence_array()
@@ -68,6 +66,7 @@ if __name__ == '__main__':
         line_points_0 = coordinates.copy()
         current_w1_accum = 0
 
+        # 4. Iterative Move Loop
         for move_point_nb in range(NUM_MOVE_POINTS):
             
             if move_point_nb > 0:
@@ -89,14 +88,13 @@ if __name__ == '__main__':
                 coordinates[selected_point_idx] = (old_x, clamped_y)
                 current_w1_accum += np.abs(actual_delta)
 
+                # Generate new image
                 image = generate_image(coordinates, args)
                 
-                image_arr = np.array(image).astype(float)
-                image_smooth = scipy.ndimage.gaussian_filter(image_arr, sigma=1.0) 
-
+                
                 hough_transformer = TopologicalHoughTransform(
-                    image_smooth, 
-                    value_threshold=10, # Threshold 10 (lower ebcause 150 resulted in flat line)
+                    image, 
+                    value_threshold=150, # Restored to 150
                     pers_limit=120,
                     three_periods=True, normalize=False)
                 pers_array = hough_transformer.get_persistence_array()
@@ -112,7 +110,7 @@ if __name__ == '__main__':
                 dgm2_inp = np.array(coordinates, dtype=np.float64)
                 dB_img = gd.bottleneck_distance(dgm1_inp, dgm2_inp)
 
-                # Store Results (different accumulation logic then before)
+                # Store Results
                 w1_distances.append(current_w1_accum)
                 db_distances_pd.append(dB_pd)
                 db_distances_img.append(dB_img)
