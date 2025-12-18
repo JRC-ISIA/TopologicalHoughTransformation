@@ -42,6 +42,7 @@ if __name__ == '__main__':
     args.n_point_line_2 = args.n_point_line_1 = 500
 
     args.noise_levels = [3]
+    args.num_sim_rounds = 10
 
     cms_baseline, cms_PH = [], []
 
@@ -147,9 +148,9 @@ if __name__ == '__main__':
     logging.info("Confusion Matrices PH: %s", cms_PH)
 
     with open(os.path.join(args.output_directory,
-                           "output_base.txt"), "a", encoding='utf-8') as f:
+                           "output_base2.txt"), "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices Baseline: {cms_baseline}\n")
 
-    with open(os.path.join(args.output_directory, "output_ph.txt"),
+    with open(os.path.join(args.output_directory, "output_ph2.txt"),
               "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices PH: {cms_PH}\n")
