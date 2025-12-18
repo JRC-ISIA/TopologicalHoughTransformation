@@ -89,8 +89,23 @@ def main():
     p_base, r_base, a_base, f1_base = zip(*metrics_base)
     p_ph, r_ph, a_ph, f1_ph = zip(*metrics_ph)
 
-    # 3. Plotting
-    fig, axs = plt.subplots(2, 2, figsize=(14, 10))
+    # 3. Print Results Table
+    print("\n" + "="*80)
+    print("PRECISION AND ACCURACY (%) - By Noise Level")
+    print("="*80)
+    print(f"{'Noise':<8} {'Precision (%)':<30} {'Accuracy (%)':<30}")
+    print(f"{'Level':<8} {'Baseline':<15} {'Topological':<15} {'Baseline':<15} {'Topological':<15}")
+    print("-"*80)
+    
+    for i, noise in enumerate(noise_levels):
+        print(f"{noise:<8} {p_base[i]*100:<15.2f} {p_ph[i]*100:<15.2f} {a_base[i]*100:<15.2f} {a_ph[i]*100:<15.2f}")
+    
+    print("-"*80)
+    print(f"{'Mean':<8} {np.mean(p_base)*100:<15.2f} {np.mean(p_ph)*100:<15.2f} {np.mean(a_base)*100:<15.2f} {np.mean(a_ph)*100:<15.2f}")
+    print("="*80 + "\n")
+
+    # 4. Plotting (only Precision and Accuracy)
+    fig, axs = plt.subplots(1, 2, figsize=(14, 5))
     fig.suptitle('Performance Metrics: Topological vs Baseline Hough Transform', fontsize=16)
 
     # Helper function for subplots
@@ -103,10 +118,8 @@ def main():
         ax.grid(True, linestyle='--', alpha=0.6)
         ax.legend()
 
-    plot_metric(axs[0, 0], p_base, p_ph, 'Precision (TP / (TP + FP))', 'Precision')
-    plot_metric(axs[0, 1], r_base, r_ph, 'Recall (TP / (TP + FN))', 'Recall')
-    plot_metric(axs[1, 0], a_base, a_ph, 'Accuracy (TP / Total)', 'Accuracy')
-    plot_metric(axs[1, 1], f1_base, f1_ph, 'F1 Score', 'F1 Score')
+    plot_metric(axs[0], p_base, p_ph, 'Precision (TP / (TP + FP))', 'Precision')
+    plot_metric(axs[1], a_base, a_ph, 'Accuracy (TP / Total)', 'Accuracy')
 
     plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # Adjust layout to make room for suptitle
     
