@@ -110,7 +110,7 @@ def main():
 
     plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # Adjust layout to make room for suptitle
     
-    save_path = 'metrics_comparison.png'
+    save_path = 'out/metrics_comparison1.png'
     plt.savefig(save_path)
     print(f"Plots saved successfully to {save_path}")
     plt.show()
