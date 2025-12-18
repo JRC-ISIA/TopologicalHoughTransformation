@@ -74,7 +74,7 @@ python experiments/experiment_1.py --output-directory results --noise-levels 1 2
 
 To reproduce the experiment 1 from the paper, use the following arguments:
 ```bash
-python experiments/experiment_1.py --num-sim-rounds 10 --noise-levels 4 5 6 7 8 9 10 11 12 13 14 15
+python experiments/experiment_1.py --num-sim-rounds 10 --noise-levels 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 ```
 Experiment 2 can be reproduced by just running the corresponding python script:
 ```bash
