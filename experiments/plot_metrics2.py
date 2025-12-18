@@ -9,7 +9,7 @@ FILE_PH = 'out/output_ph2.txt'
 
 # The experiment loop was: range(500, 150, -50) -> [500, 450, ... 200]
 # We list them here to map the data correctly.
-POINT_COUNTS_DESC = list(range(500, 150, -50)) 
+POINT_COUNTS_DESC = list(range(500, 50, -50)) 
 
 plt.rcParams.update({
     'font.family': 'serif',
@@ -92,7 +92,23 @@ def main():
     acc_ph  = [m[2] for _, m in combined_ph]
     f1_ph   = [m[3] for _, m in combined_ph]
 
-    fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+    # Print Results Table
+    print("\n" + "="*80)
+    print("PRECISION AND ACCURACY (%) - By Point Count")
+    print("="*80)
+    print(f"{'Point':<8} {'Precision (%)':<30} {'Accuracy (%)':<30}")
+    print(f"{'Count':<8} {'Baseline':<15} {'Our Method':<15} {'Baseline':<15} {'Our Method':<15}")
+    print("-"*80)
+    
+    for i, pc in enumerate(x_sorted):
+        print(f"{pc:<8} {prec_base[i]*100:<15.2f} {prec_ph[i]*100:<15.2f} {acc_base[i]*100:<15.2f} {acc_ph[i]*100:<15.2f}")
+    
+    print("-"*80)
+    print(f"{'Mean':<8} {np.mean(prec_base)*100:<15.2f} {np.mean(prec_ph)*100:<15.2f} {np.mean(acc_base)*100:<15.2f} {np.mean(acc_ph)*100:<15.2f}")
+    print("="*80 + "\n")
+
+    # Plotting (only Precision and Accuracy)
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
     
     def style_plot(ax, y_base, y_ph, bottom_title):
         ax.plot(x_sorted, y_ph, color=COLOR_PH, marker=MARKER_PH, 
@@ -110,13 +126,11 @@ def main():
         
         ax.legend(loc='lower right', frameon=True, fancybox=False, edgecolor='black')
 
-    style_plot(axs[0, 0], prec_base, prec_ph, r'(a) Precision')
-    style_plot(axs[0, 1], rec_base, rec_ph, r'(b) Recall')
-    style_plot(axs[1, 0], acc_base, acc_ph, r'(c) Accuracy')
-    style_plot(axs[1, 1], f1_base, f1_ph, r'(d) F1 Score')
+    style_plot(axs[0], prec_base, prec_ph, r'(a) Precision')
+    style_plot(axs[1], acc_base, acc_ph, r'(b) Accuracy')
 
     # Add a single legend to the figure (optional, or per plot)
-    axs[0, 0].legend(loc='best', frameon=True, framealpha=0.9)
+    axs[0].legend(loc='best', frameon=True, framealpha=0.9)
 
     plt.tight_layout()
     plt.subplots_adjust(bottom=0.1, hspace=0.4) 
