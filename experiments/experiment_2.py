@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     cms_baseline, cms_PH = [], []
 
-    for n_pt_idx, args.n_point_line_2 in enumerate(range(500, 150, -50)):
+    for n_pt_idx, args.n_point_line_2 in enumerate(range(500, 25, -50)):
         cm_baseline = [[0, 0], [0, 0]]
         cm_PH = [[0, 0], [0, 0]]
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
             img_with_lines_PH = draw_lines_on_image(hough_transformer)
 
             img_with_lines, lines = baseline_detect_lines(
-                original_image=original_image, img_edges=edges, threshold=75)
+                original_image=original_image, img_edges=edges, threshold=70)
 
             for line in lines:
                 pt1, pt2 = line_to_pts(line[0])
@@ -110,7 +110,7 @@ if __name__ == '__main__':
                 hough_transformer, true_lines=true_lines, other_lines=lines,
                 show='none', my_ax=axs[2])
 
-            cm = get_conf_matrix(args.n_point_line_2, my_true_lines,
+            cm = get_conf_matrix(args.noise_levels[0], my_true_lines,
                                  my_other_lines)
 
             cm_baseline = [
@@ -119,7 +119,7 @@ if __name__ == '__main__':
                 for i, _ in enumerate(cm_baseline)
             ]
 
-            cm = get_conf_matrix(args.n_point_line_2, my_true_lines,
+            cm = get_conf_matrix(args.noise_levels[0], my_true_lines,
                                  hough_transformer.get_lines())
             cm_PH = [
                 [cm_PH[i][j] + cm[i][j]
