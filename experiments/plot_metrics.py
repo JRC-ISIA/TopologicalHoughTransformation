@@ -6,11 +6,24 @@ import os
 # --- Configuration ---
 FILE_BASELINE = 'out/output_base.txt'
 FILE_PH = 'out/output_ph.txt'
-START_NOISE_LEVEL = 5  # The starting noise level from your experiment
-# ---------------------
+
+NOISE_LEVELS = list(range(5, 20))
+
+COLOR_BLUE = '#648FFF'
+COLOR_RED = '#DC267F'  
+
+MARKER_PH = 's'           
+MARKER_BASE = 'o'
+
+plt.rcParams.update({
+    'font.family': 'serif',
+    'mathtext.fontset': 'cm',
+    'font.size': 11,
+    'axes.linewidth': 0.8,
+})
 
 def read_last_line_matrix(filename):
-    """Reads the last line of the file and parses the list of confusion matrices."""
+    """Reads the last line of the file and parses the confusion matrices."""
     if not os.path.exists(filename):
         print(f"Error: File {filename} not found.")
         return []
@@ -20,51 +33,32 @@ def read_last_line_matrix(filename):
         if not lines:
             print(f"Error: File {filename} is empty.")
             return []
-        
+
         last_line = lines[-1].strip()
-        
-        # specific parsing for the format: "Confusion Matrices X: [...]"
         if ":" in last_line:
             try:
-                # Split by the first colon and take the right part
                 data_str = last_line.split(':', 1)[1].strip()
-                # Safely evaluate the string as a Python list
-                data = ast.literal_eval(data_str)
-                return data
+                return ast.literal_eval(data_str)
             except (ValueError, SyntaxError) as e:
                 print(f"Error parsing data from {filename}: {e}")
                 return []
-        else:
-            print(f"Error: Line format in {filename} unexpected. Expected 'Title: [...]'")
-            return []
+    return []
 
 def calculate_metrics(cm):
-    """
-    Calculates metrics from a confusion matrix [[TP, FN], [FP, TN]].
-    Returns: precision, recall, accuracy, f1
-    """
-    TP = cm[0][0]
-    FN = cm[0][1]
-    FP = cm[1][0]
-    TN = cm[1][1] # Usually 0 in this specific line detection context
-    
-    # Precision: TP / (TP + FP)
+    """Returns precision, recall, accuracy, f1"""
+    TP, FN = cm[0][0], cm[0][1]
+    FP, TN = cm[1][0], cm[1][1]
+
     precision = TP / (TP + FP) if (TP + FP) > 0 else 0.0
-        
-    # Recall (Sensitivity): TP / (TP + FN)
     recall = TP / (TP + FN) if (TP + FN) > 0 else 0.0
-        
-    # Accuracy: (TP + TN) / Total
+
     total = TP + TN + FP + FN
     accuracy = (TP + TN) / total if total > 0 else 0.0
-        
-    # F1 Score
+
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
-        
     return precision, recall, accuracy, f1
 
 def main():
-    # 1. Load Data
     cms_baseline = read_last_line_matrix(FILE_BASELINE)
     cms_ph = read_last_line_matrix(FILE_PH)
 
@@ -72,61 +66,88 @@ def main():
         print("Could not load data. Exiting.")
         return
 
-    # Ensure both have the same length for plotting
-    min_len = min(len(cms_baseline), len(cms_ph))
+    min_len = min(len(cms_baseline), len(cms_ph), len(NOISE_LEVELS))
     cms_baseline = cms_baseline[:min_len]
     cms_ph = cms_ph[:min_len]
+    x_axis_raw = NOISE_LEVELS[:min_len]
 
-    # Generate Noise Levels (X-axis)
-    noise_levels = list(range(START_NOISE_LEVEL, START_NOISE_LEVEL + min_len))
-
-    # 2. Calculate Metrics
     metrics_base = [calculate_metrics(cm) for cm in cms_baseline]
     metrics_ph = [calculate_metrics(cm) for cm in cms_ph]
+    combined_base = sorted(zip(x_axis_raw, metrics_base))
+    combined_ph = sorted(zip(x_axis_raw, metrics_ph))
 
-    # Unzip into separate lists for plotting
-    # Structure: [(prec, rec, acc, f1), ...] -> (prec_list, rec_list, acc_list, f1_list)
-    p_base, r_base, a_base, f1_base = zip(*metrics_base)
-    p_ph, r_ph, a_ph, f1_ph = zip(*metrics_ph)
+    x_sorted = [x for x, _ in combined_base]
 
-    # 3. Print Results Table
+    prec_base = [m[0] for _, m in combined_base]
+    rec_base  = [m[1] for _, m in combined_base]
+    acc_base  = [m[2] for _, m in combined_base]
+    f1_base   = [m[3] for _, m in combined_base]
+
+    prec_ph = [m[0] for _, m in combined_ph]
+    rec_ph  = [m[1] for _, m in combined_ph]
+    acc_ph  = [m[2] for _, m in combined_ph]
+    f1_ph   = [m[3] for _, m in combined_ph]
+
     print("\n" + "="*80)
     print("PRECISION AND ACCURACY (%) - By Noise Level")
     print("="*80)
     print(f"{'Noise':<8} {'Precision (%)':<30} {'Accuracy (%)':<30}")
-    print(f"{'Level':<8} {'Baseline':<15} {'Topological':<15} {'Baseline':<15} {'Topological':<15}")
+    print(f"{'Level':<8} {'Baseline':<15} {'Our Method':<15} {'Baseline':<15} {'Our Method':<15}")
     print("-"*80)
-    
-    for i, noise in enumerate(noise_levels):
-        print(f"{noise:<8} {p_base[i]*100:<15.2f} {p_ph[i]*100:<15.2f} {a_base[i]*100:<15.2f} {a_ph[i]*100:<15.2f}")
-    
+
+    for i, noise in enumerate(x_sorted):
+        print(f"{noise:<8} {prec_base[i]*100:<15.2f} {prec_ph[i]*100:<15.2f} {acc_base[i]*100:<15.2f} {acc_ph[i]*100:<15.2f}")
+
     print("-"*80)
-    print(f"{'Mean':<8} {np.mean(p_base)*100:<15.2f} {np.mean(p_ph)*100:<15.2f} {np.mean(a_base)*100:<15.2f} {np.mean(a_ph)*100:<15.2f}")
+    print(f"{'Mean':<8} {np.mean(prec_base)*100:<15.2f} {np.mean(prec_ph)*100:<15.2f} {np.mean(acc_base)*100:<15.2f} {np.mean(acc_ph)*100:<15.2f}")
     print("="*80 + "\n")
 
-    # 4. Plotting (only Precision and Accuracy)
-    fig, axs = plt.subplots(1, 2, figsize=(14, 5))
-    fig.suptitle('Performance Metrics: Topological vs Baseline Hough Transform', fontsize=16)
+    fig, axs = plt.subplots(1, 3, figsize=(15, 4))
 
-    # Helper function for subplots
-    def plot_metric(ax, y_base, y_ph, title, ylabel):
-        ax.plot(noise_levels, y_base, 'o--', label='Baseline', color='tab:blue', alpha=0.7)
-        ax.plot(noise_levels, y_ph, 'o-', label='Topological (PH)', color='tab:orange', linewidth=2)
-        ax.set_title(title)
-        ax.set_xlabel('Noise Level')
-        ax.set_ylabel(ylabel)
-        ax.grid(True, linestyle='--', alpha=0.6)
-        ax.legend()
+    def style_plot(ax, y_base, y_ph, title, show_ylabel=True):
+        """Style plot to match paper's tikz specifications."""
+        ax.plot(x_sorted, y_base, color=COLOR_RED, marker=MARKER_BASE,
+                markersize=6, linestyle='-', linewidth=2,
+                label='baseline', markeredgewidth=0)
 
-    plot_metric(axs[0], p_base, p_ph, 'Precision (TP / (TP + FP))', 'Precision')
-    plot_metric(axs[1], a_base, a_ph, 'Accuracy (TP / Total)', 'Accuracy')
+        ax.plot(x_sorted, y_ph, color=COLOR_BLUE, marker=MARKER_PH,
+                markersize=6, linestyle='-', linewidth=2,
+                label='our method', markeredgewidth=0)
 
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # Adjust layout to make room for suptitle
-    
+        ax.set_xlim(5, 19)
+        ax.set_ylim(0.4, 1.1)
+
+        ax.set_xlabel(r'Noise level $\varepsilon$', fontsize=11)
+        if show_ylabel:
+            ax.set_ylabel('Value', fontsize=11)
+        else:
+            ax.set_yticklabels([])
+
+        ax.grid(True, which='both', alpha=1.0)
+        ax.grid(True, which='major', linewidth=0.6, color='gray', alpha=0.5)
+        ax.grid(True, which='minor', linewidth=0.3, color='gray', alpha=0.2)
+        ax.minorticks_on()
+
+        ax.set_title(title, fontsize=11, pad=10)
+
+        return ax
+
+    style_plot(axs[0], acc_base, acc_ph, 'Accuracy', show_ylabel=True)
+    style_plot(axs[1], prec_base, prec_ph, 'Precision', show_ylabel=False)
+    style_plot(axs[2], f1_base, f1_ph, 'F1 Score', show_ylabel=False)
+
+    handles, labels = axs[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', ncol=2,
+               frameon=True, fancybox=False, edgecolor='black',
+               bbox_to_anchor=(0.5, -0.05), fontsize=11)
+
+    plt.tight_layout()
+    plt.subplots_adjust(bottom=0.15, wspace=0.25)
+
     save_path = 'out/metrics_comparison1.png'
-    plt.savefig(save_path)
-    print(f"Plots saved successfully to {save_path}")
-    plt.show()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    print(f"Publication-quality plots saved to {save_path}")
+    # plt.show()  # Commented out to prevent hanging
 
 if __name__ == "__main__":
     main()
