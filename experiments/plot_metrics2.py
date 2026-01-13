@@ -7,24 +7,20 @@ import os
 FILE_BASELINE = 'out/output_base2.txt'
 FILE_PH = 'out/output_ph2.txt'
 
-# The experiment loop was: range(500, 150, -50) -> [500, 450, ... 200]
-# We list them here to map the data correctly.
-POINT_COUNTS_DESC = list(range(500, 50, -50)) 
+POINT_COUNTS_DESC = list(range(500, 25, -50)) 
+
+COLOR_BLUE = '#648FFF' 
+COLOR_RED = '#DC267F' 
+
+MARKER_PH = 's'  
+MARKER_BASE = 'o'  
 
 plt.rcParams.update({
     'font.family': 'serif',
     'mathtext.fontset': 'cm',
-    'font.size': 12,
-    'axes.grid': True,
-    'grid.alpha': 0.5,
-    'grid.color': '#cccccc'
+    'font.size': 11,
+    'axes.linewidth': 0.8,
 })
-
-COLOR_PH = '#6495ED'      # Cornflower Blue (for the "better" method/squares)
-COLOR_BASE = '#C71585'    # Medium Violet Red (for the "baseline"/circles)
-
-MARKER_PH = 's'           # Square
-MARKER_BASE = 'o'         # Circle
 
 def read_last_line_matrix(filename):
     """Reads the last line of the file and parses the confusion matrices."""
@@ -107,38 +103,53 @@ def main():
     print(f"{'Mean':<8} {np.mean(prec_base)*100:<15.2f} {np.mean(prec_ph)*100:<15.2f} {np.mean(acc_base)*100:<15.2f} {np.mean(acc_ph)*100:<15.2f}")
     print("="*80 + "\n")
 
-    # Plotting (only Precision and Accuracy)
-    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
-    
-    def style_plot(ax, y_base, y_ph, bottom_title):
-        ax.plot(x_sorted, y_ph, color=COLOR_PH, marker=MARKER_PH, 
-                markersize=8, linestyle='-', label='Our Method', linewidth=1.5)
-        
-        ax.plot(x_sorted, y_base, color=COLOR_BASE, marker=MARKER_BASE, 
-                markersize=8, linestyle='-', label='Baseline', linewidth=1.5)
-        
-        ax.set_xlabel(r'Pointcount $n_2$', labelpad=10)
-        
-        ax.text(0.5, -0.3, bottom_title, transform=ax.transAxes, 
-                ha='center', va='top', fontsize=14, family='serif')
-        
-        ax.set_ylim(-0.05, 1.05)
-        
-        ax.legend(loc='lower right', frameon=True, fancybox=False, edgecolor='black')
+    fig, axs = plt.subplots(1, 3, figsize=(15, 4))
 
-    style_plot(axs[0], prec_base, prec_ph, r'(a) Precision')
-    style_plot(axs[1], acc_base, acc_ph, r'(b) Accuracy')
+    def style_plot(ax, y_base, y_ph, title, show_ylabel=True):
+        """Style plot to match paper's tikz specifications."""
+        ax.plot(x_sorted, y_base, color=COLOR_RED, marker=MARKER_BASE,
+                markersize=6, linestyle='-', linewidth=2,
+                label='baseline', markeredgewidth=0)
 
-    # Add a single legend to the figure (optional, or per plot)
-    axs[0].legend(loc='best', frameon=True, framealpha=0.9)
+        ax.plot(x_sorted, y_ph, color=COLOR_BLUE, marker=MARKER_PH,
+                markersize=6, linestyle='-', linewidth=2,
+                label='our method', markeredgewidth=0)
+
+        ax.set_xlim(50, 500)
+        ax.set_ylim(0.4, 1.1)
+
+        # Labels
+        ax.set_xlabel(r'Pointcount $n_2$', fontsize=11)
+        if show_ylabel:
+            ax.set_ylabel('Value', fontsize=11)
+        else:
+            ax.set_yticklabels([])
+
+        ax.grid(True, which='both', alpha=1.0)
+        ax.grid(True, which='major', linewidth=0.6, color='gray', alpha=0.5)
+        ax.grid(True, which='minor', linewidth=0.3, color='gray', alpha=0.2)
+        ax.minorticks_on()
+
+        ax.set_title(title, fontsize=11, pad=10)
+
+        return ax
+
+    style_plot(axs[0], acc_base, acc_ph, 'Accuracy', show_ylabel=True)
+    style_plot(axs[1], prec_base, prec_ph, 'Precision', show_ylabel=False)
+    style_plot(axs[2], f1_base, f1_ph, 'F1 Score', show_ylabel=False)
+
+    handles, labels = axs[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', ncol=2,
+               frameon=True, fancybox=False, edgecolor='black',
+               bbox_to_anchor=(0.5, -0.05), fontsize=11)
 
     plt.tight_layout()
-    plt.subplots_adjust(bottom=0.1, hspace=0.4) 
-    
+    plt.subplots_adjust(bottom=0.15, wspace=0.25)
+
     save_path = 'out/metrics_comparison2.png'
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    print(f"Styled plots saved to {save_path}")
-    plt.show()
+    print(f"Publication-quality plots saved to {save_path}")
+    # plt.show()  # Commented out to prevent hanging
 
 if __name__ == "__main__":
     main()
