@@ -9,7 +9,7 @@ License: MIT
 """
 import unittest
 
-from topologicalhoughtransform.utils.transform import \
+from src.transform import \
     slope_intercept_to_rho_theta, rho_theta_to_slope_intercept, line_to_pts
 
 

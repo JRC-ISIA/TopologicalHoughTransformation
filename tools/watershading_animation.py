@@ -5,6 +5,10 @@ Date: June 2025
 Description: Tool to generate an animation of the watershading process.
 License: MIT
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import logging
 import os
 import tempfile
@@ -14,8 +18,7 @@ import numpy as np
 import tqdm
 from PIL import Image
 
-from topologicalhoughtransform.topological_hough_transform import \
-    TopologicalHoughTransform
+from src.topological_hough_transform import TopologicalHoughTransform
 from utils.data_generator import generate_image, generate_line
 from utils.parser import create_parser
 

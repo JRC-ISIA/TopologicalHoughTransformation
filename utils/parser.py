@@ -23,7 +23,7 @@ def create_parser():
     # Add an argument for a list of integers with a default value
     experiment_group.add_argument(
         "--noise-levels", type=int, nargs="+",
-        default=[8, 9], help="List of noise levels to be used."
+        default=[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19], help="List of noise levels to be used."
     )
 
     experiment_group.add_argument(

@@ -11,36 +11,20 @@ This project implements a **Topological Hough Transform** for detecting lines in
 - **Evaluation**: Generate confusion matrices to compare detection methods.
 
 ## Installation
-The easiest way to install the library is using `pip`:
+
+Clone the repository and install dependencies:
 
 ```bash
-pip install topological-hough-transform
+git clone git@github.com:JRC-ISIA/TopologicalHoughTransformation.git
+cd TopologicalHoughTransformation
+pip install -r requirements.txt
 ```
-
-### Using Github
-An alternative is to use the libraries sources. For this you need to have `git` installed on your system. Follow these steps:
-
-1. Clone the repository:
-   ```bash
-   git clone git@github.com:JRC-ISIA/TopologicalHoughTransformation.git
-   cd TopologicalHoughTransformation
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. Install the library itself:
-   ```bash
-   pip install .
-   ```
 
 ## Using the library module: Examples
 
 ### Generating a Persistence Diagram
 ```python
-from topologicalhoughtransform.TopologicalHoughTransform import TopologicalHoughTransform
+from src.topological_hough_transform import TopologicalHoughTransform
 from utils.plotting import plot_persistence_diagram
 
 image = ...  # Load or generate an image
@@ -49,9 +33,9 @@ plot_persistence_diagram(hough_transformer)
 ```
 
 ### Usage of Experiments
-The experiments shall also be used as a reference on how to use the library 
-module. The experiments are located in the `experiments` folder and can be run 
-directly. Run the main experiments, as described in the initial publication [1] 
+The experiments shall also be used as a reference on how to use the library
+module. The experiments are located in the `experiments` folder and can be run
+directly. Run the main experiments, as described in the initial publication [1]
 using:
 ```bash
 python experiments/experiment_1.py --output-directory results --log-level INFO

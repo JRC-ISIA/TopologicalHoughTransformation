@@ -5,6 +5,10 @@ Date: June 2025
 Description: Experiment to test the robustness of the Topological Hough Transform
 License: MIT
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import logging
 import os
 import random
@@ -15,8 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from topologicalhoughtransform.topological_hough_transform import \
-    TopologicalHoughTransform
+from src.topological_hough_transform import TopologicalHoughTransform
 from utils.parser import create_parser
 from utils.data_generator import generate_image, generate_line
 

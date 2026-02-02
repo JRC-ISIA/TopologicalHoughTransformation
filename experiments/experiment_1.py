@@ -7,6 +7,10 @@ Transform against the baseline OpenCV Hough Transform in terms of
 precision and recall for different noise levels.
 License: MIT
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import logging
 import os
 import random
@@ -15,11 +19,9 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from topologicalhoughtransform.topological_hough_transform import \
-    TopologicalHoughTransform
-from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.transform import \
-    slope_intercept_to_rho_theta, line_to_pts
+from src.topological_hough_transform import TopologicalHoughTransform
+from src.eval import get_conf_matrix
+from src.transform import slope_intercept_to_rho_theta, line_to_pts
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.colors import pth_color
 from utils.parser import create_parser
@@ -79,7 +81,7 @@ if __name__ == '__main__':
             original_image = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
             hough_transformer = TopologicalHoughTransform(
-                image, value_threshold=150, pers_limit=120, three_periods=True)
+                image, value_threshold=150, pers_limit=150, three_periods=True)
             img_with_lines_PH = draw_lines_on_image(hough_transformer)
 
             img_with_lines, lines = baseline_detect_lines(
@@ -91,26 +93,27 @@ if __name__ == '__main__':
                 # Draw the dashed line
                 draw_dashed_line(img_with_lines_PH, pt1, pt2, color=pth_color)
 
-            fig, axs = plt.subplots(1, 3, figsize=(12, 4))
-            axs[0].imshow(img_with_lines_PH)
-            axs[0].title.set_text('Image Space')
+            # fig, axs = plt.subplots(1, 3, figsize=(12, 4))
+            # axs[0].imshow(img_with_lines_PH)
+            # axs[0].title.set_text('Image Space')
 
-            plot_persistence_diagram(hough_transformer, ax=axs[1],
-                                     show_limit=True, show_nums=False)
+            # plot_persistence_diagram(hough_transformer, ax=axs[1],
+            #                          show_limit=True, show_nums=False)
 
             my_true_lines, my_other_lines = plot_hough_with_loci(
                 hough_transformer, true_lines=true_lines, other_lines=lines,
-                show='none', my_ax=axs[2])
+                show='none', my_ax=None)
 
-            # "Fake"-Handles für die Legende erstellen
-            handles = [
-                plt.Line2D([0], [0], color='red', label='baseline'),
-                plt.Line2D([0], [0], color='blue', label='our method')
-            ]
+            # # "Fake"-Handles für die Legende erstellen
+            # handles = [
+            #     plt.Line2D([0], [0], color='red', label='baseline'),
+            #     plt.Line2D([0], [0], color='blue', label='our method')
+            # ]
 
-            plt.tight_layout()
-            plt.savefig(os.path.join(args.output_directory, "tmp",
-                                     f'plot_{noise_level}{sim_run}.png'))
+            # plt.tight_layout()
+            # plt.savefig(os.path.join(args.output_directory, "tmp",
+            #                          f'plot_{noise_level}{sim_run}.png'))
+            plt.close('all')
 
             for line in lines:
                 logging.debug("Lines found with opencv: (%f, %f)",

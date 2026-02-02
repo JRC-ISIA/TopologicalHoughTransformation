@@ -7,6 +7,10 @@ Description: Topological Hough Transform implementation using the
 Note: This experiment was not part of the publication.
 License: MIT
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import os
 import random
 
@@ -16,9 +20,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from topologicalhoughtransform.topological_hough_transform import \
-    TopologicalHoughTransform
-from topologicalhoughtransform.utils.eval import find_closest_line
+from src.topological_hough_transform import TopologicalHoughTransform
+from src.eval import find_closest_line
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.data_generator import (generate_image, generate_hough_line)
 from utils.plotting import draw_lines_on_image

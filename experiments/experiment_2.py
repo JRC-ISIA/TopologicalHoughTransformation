@@ -7,6 +7,10 @@ Transform against the baseline OpenCV Hough Transform in terms of
 precision and recall for different point counts of the second line.
 License: MIT
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import logging
 import os
 import random
@@ -15,11 +19,9 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from topologicalhoughtransform.topological_hough_transform import \
-    TopologicalHoughTransform
-from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.transform import \
-    slope_intercept_to_rho_theta, line_to_pts
+from src.topological_hough_transform import TopologicalHoughTransform
+from src.eval import get_conf_matrix
+from src.transform import slope_intercept_to_rho_theta, line_to_pts
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.colors import pth_color_str, baseline_color_str, baseline_color
 from utils.parser import create_parser

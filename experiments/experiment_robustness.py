@@ -7,6 +7,10 @@ Description: Experiment to test the robustness of the Topological Hough
 Note: This experiment was not part of the publication.
 License: MIT
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import os
 
 import cv2
@@ -15,11 +19,9 @@ import numpy as np
 import seaborn as sns
 from PIL import Image
 
-from topologicalhoughtransform.topological_hough_transform import \
-    TopologicalHoughTransform
-from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.transform import \
-    slope_intercept_to_rho_theta
+from src.topological_hough_transform import TopologicalHoughTransform
+from src.eval import get_conf_matrix
+from src.transform import slope_intercept_to_rho_theta
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.data_generator import (generate_image, generate_line)
 from utils.plotting import draw_lines_on_image, plot_hough_with_loci, \

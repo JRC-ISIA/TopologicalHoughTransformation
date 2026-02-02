@@ -10,9 +10,8 @@ import logging
 
 import numpy as np
 
-from topologicalhoughtransform.ph.persistence_homologie import persistence
-from topologicalhoughtransform.utils.transform import \
-    rho_theta_to_slope_intercept
+from src.persistence_homologie import persistence
+from src.transform import rho_theta_to_slope_intercept
 
 
 class TopologicalHoughTransform():
@@ -183,10 +182,13 @@ class TopologicalHoughTransform():
             else:
                 y_c = k * x_c + d
                 # remove everything that is not in the image
-                x_coords, y_coords = zip(*[
+                valid_points = [
                     (xi, yi) for xi, yi in zip(x_c, y_c)
                     if 0 <= yi < self.img.shape[0] and xi > 0
-                ])
+                ]
+                if not valid_points:
+                    continue
+                x_coords, y_coords = zip(*valid_points)
 
             self.line_coordinates.append([x_coords, y_coords])
 
