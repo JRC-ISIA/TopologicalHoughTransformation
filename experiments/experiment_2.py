@@ -7,6 +7,10 @@ Transform against the baseline OpenCV Hough Transform in terms of
 precision and recall for different point counts of the second line.
 License: MIT
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import logging
 import os
 import random
@@ -15,11 +19,9 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from topologicalhoughtransform.topological_hough_transform import \
-    TopologicalHoughTransform
-from topologicalhoughtransform.utils.eval import get_conf_matrix
-from topologicalhoughtransform.utils.transform import \
-    slope_intercept_to_rho_theta, line_to_pts
+from src.topological_hough_transform import TopologicalHoughTransform
+from src.eval import get_conf_matrix
+from src.transform import slope_intercept_to_rho_theta, line_to_pts
 from utils.baseline_hough_transform import baseline_detect_lines
 from utils.colors import pth_color_str, baseline_color_str, baseline_color
 from utils.parser import create_parser
@@ -42,10 +44,11 @@ if __name__ == '__main__':
     args.n_point_line_2 = args.n_point_line_1 = 500
 
     args.noise_levels = [3]
+    args.num_sim_rounds = 10
 
     cms_baseline, cms_PH = [], []
 
-    for n_pt_idx, args.n_point_line_2 in enumerate(range(500, 0, -50)):
+    for n_pt_idx, args.n_point_line_2 in enumerate(range(500, 25, -50)):
         cm_baseline = [[0, 0], [0, 0]]
         cm_PH = [[0, 0], [0, 0]]
 
@@ -84,7 +87,7 @@ if __name__ == '__main__':
             img_with_lines_PH = draw_lines_on_image(hough_transformer)
 
             img_with_lines, lines = baseline_detect_lines(
-                original_image=original_image, img_edges=edges, threshold=75)
+                original_image=original_image, img_edges=edges, threshold=70)
 
             for line in lines:
                 pt1, pt2 = line_to_pts(line[0])
@@ -109,7 +112,7 @@ if __name__ == '__main__':
                 hough_transformer, true_lines=true_lines, other_lines=lines,
                 show='none', my_ax=axs[2])
 
-            cm = get_conf_matrix(args.n_point_line_2, my_true_lines,
+            cm = get_conf_matrix(args.noise_levels[0], my_true_lines,
                                  my_other_lines)
 
             cm_baseline = [
@@ -118,7 +121,7 @@ if __name__ == '__main__':
                 for i, _ in enumerate(cm_baseline)
             ]
 
-            cm = get_conf_matrix(args.n_point_line_2, my_true_lines,
+            cm = get_conf_matrix(args.noise_levels[0], my_true_lines,
                                  hough_transformer.get_lines())
             cm_PH = [
                 [cm_PH[i][j] + cm[i][j]
@@ -147,9 +150,9 @@ if __name__ == '__main__':
     logging.info("Confusion Matrices PH: %s", cms_PH)
 
     with open(os.path.join(args.output_directory,
-                           "output_base.txt"), "a", encoding='utf-8') as f:
+                           "output_base2.txt"), "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices Baseline: {cms_baseline}\n")
 
-    with open(os.path.join(args.output_directory, "output_ph.txt"),
+    with open(os.path.join(args.output_directory, "output_ph2.txt"),
               "a", encoding='utf-8') as f:
         f.write(f"Confusion Matrices PH: {cms_PH}\n")

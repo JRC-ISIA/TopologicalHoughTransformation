@@ -1,5 +1,5 @@
 import logging
-from topologicalhoughtransform.ph.union_find import UnionFind
+from src.union_find import UnionFind
 
 __author__ = "Stefan Huber <shuber@sthu.org>"
 
