@@ -64,6 +64,13 @@ In case you think this project is useful for your work, please cite it as follow
 }
 ```
 
+## Acknowledgments
+he financial support by the Austrian Federal Ministry of Economy, Energy and 
+Tourism, the National Foundation for Research, Technology and Development and 
+the Christian Doppler Research Association is gratefully acknowledged.
+
+We thank [Lukas Lürzer](https://orcid.org/0009-0000-5953-1381) for the help 
+on preparing the code for publication.
 
 ## Contact
 
