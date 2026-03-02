@@ -27,8 +27,10 @@ Each experiment is organized in a separate python script.
 
 The code and experiments for the EuroCG'26 paper 
 ["Topologically Stable Hough Transform"]()
-will follow soon!
-
+can be found in the `experiments_eurocg26` folder.
+The one experiment is located in `visualization.py` and can be run to 
+visualize the results of the topological Hough transform.
+The data to replicate the experiments is available by setting the `DEBUG` flag.
 
 ## Contributing
 
