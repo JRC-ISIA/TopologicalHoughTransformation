@@ -16,65 +16,18 @@ Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/martinuray/TopologicalHoughTransform.git
-cd TopologicalHoughTransformation
-pip install -r requirements.txt
 ```
 
-## Using the library module: Examples
+## Using the repository
 
-### Generating a Persistence Diagram
+The experiments for the iDSC'25 paper 
+["Persistence-Based Hough Transform for Line Detection"](https://arxiv.org/abs/2504.16114) 
+can be found in the `experiments_idsc25` folder. 
+Each experiment is organized in a separate python script.
 
-```python
-from topologicalhoughtransform.topological_hough_transform import
-    TopologicalHoughTransform
-from utils.plotting import plot_persistence_diagram
-
-image = ...  # Load or generate an image
-hough_transformer = TopologicalHoughTransform(image, value_threshold=150,
-                                              pers_limit=120)
-plot_persistence_diagram(hough_transformer)
-```
-
-### Usage of Experiments
-The experiments shall also be used as a reference on how to use the library
-module. The experiments are located in the `experiments` folder and can be run
-directly. Run the main experiments, as described in the initial publication [1]
-using:
-```bash
-python experiments/experiment_1.py --output-directory results --log-level INFO
-```
-
-#### Arguments
-- `--output-directory`: Directory to save results.
-- `--log-level`: Logging level (e.g., `INFO`, `DEBUG`).
-- Additional arguments can be found in the `create_parser` function in `utils/parser.py` and are listed using
-```bash
-python experiments/experiment_1.py --help
-```
-
-The same applies also to the other experiments.
-
-#### Example
-```bash
-python experiments/experiment_1.py --output-directory results --noise-levels 1 2 3 --num-sim-rounds 10
-```
-
-To reproduce the experiment 1 from the paper, use the following arguments:
-```bash
-python experiments/experiment_1.py --num-sim-rounds 100 --noise-levels 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
-```
-Experiment 2 can be reproduced by just running the corresponding python script:
-```bash
-python experiments/experiment_2.py
-```
-Experiment 3 is split into two parts. First, you run the stability experiment that generates a csv file:
-```bash
-python experiments/experiment_3_stability.py
-```
-Afterwards, you can run the plotting script.
-```bash
-python experiments/experiment_3_plotting.py
-```
+The code and experiments for the EWCG'26 paper 
+["Topologically Stable Hough Transform"]()
+will follow soon!
 
 
 ## Contributing
@@ -103,6 +56,12 @@ In case you think this project is useful for your work, please cite it as follow
   url = {http://arxiv.org/abs/2504.16114},
 }
 
+@inproceedings{huber2026,
+  title={Topologically Stable Hough Transform},
+  author={Stefan Huber and Krist{\'o}f Husz{\'a}r and Michael Kerber and Martin Uray},
+  conference={26th European Workshop on Computational Geometry},
+  year={2026},
+}
 ```
 
 
