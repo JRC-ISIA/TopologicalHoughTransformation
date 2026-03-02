@@ -18,7 +18,7 @@ import numpy as np
 import tqdm
 from PIL import Image
 
-from src.topological_hough_transform import TopologicalHoughTransform
+from topologicalhoughtransform.topological_hough_transform import TopologicalHoughTransform
 from utils.data_generator import generate_image, generate_line
 from utils.parser import create_parser
 

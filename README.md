@@ -23,12 +23,15 @@ pip install -r requirements.txt
 ## Using the library module: Examples
 
 ### Generating a Persistence Diagram
+
 ```python
-from src.topological_hough_transform import TopologicalHoughTransform
+from topologicalhoughtransform.topological_hough_transform import
+    TopologicalHoughTransform
 from utils.plotting import plot_persistence_diagram
 
 image = ...  # Load or generate an image
-hough_transformer = TopologicalHoughTransform(image, value_threshold=150, pers_limit=120)
+hough_transformer = TopologicalHoughTransform(image, value_threshold=150,
+                                              pers_limit=120)
 plot_persistence_diagram(hough_transformer)
 ```
 

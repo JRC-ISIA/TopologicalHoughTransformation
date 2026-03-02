@@ -7,7 +7,7 @@ License: MIT
 """
 import unittest
 import numpy as np
-from src.topological_hough_transform import TopologicalHoughTransform
+from topologicalhoughtransform.topological_hough_transform import TopologicalHoughTransform
 
 
 class TestTopologicalHoughTransform(unittest.TestCase):
