@@ -25,7 +25,7 @@ The experiments for the iDSC'25 paper
 can be found in the `experiments_idsc25` folder. 
 Each experiment is organized in a separate python script.
 
-The code and experiments for the EWCG'26 paper 
+The code and experiments for the EuroCG'26 paper 
 ["Topologically Stable Hough Transform"]()
 will follow soon!
 
