@@ -93,8 +93,8 @@ def generate_line(args, noise_lvl=5, slope=1, intercept=0,
     point_coordinates = []
     while len(point_coordinates) < num_points:
         pts = _get_point_coord_in_img(args, noise_lvl, slope,
-                                    num_points-len(point_coordinates),
-                                    equaldist).tolist()
+                                      num_points-len(point_coordinates),
+                                      equaldist).tolist()
 
         point_coordinates.extend(pts)
 

@@ -137,8 +137,6 @@ def vizualize_experiments(tht, cht, data_generator, pd=False):
         img_indcs = np.arange(0, data_generator.img_width)
         ax[3].plot(img_indcs, np.ones_like(img_indcs) * img_dim, "k-.", alpha=0.5)
         ax[3].plot(np.ones_like(img_indcs) * img_dim, img_indcs, "k-.", alpha=0.5)
-       # viz_pd(tht.hough_image, ax[3])
-
 
     plt.tight_layout()
     plt.show()

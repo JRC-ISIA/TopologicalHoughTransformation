@@ -162,10 +162,10 @@ class DataGenerator(object):
 
     def _return_points_in_image(self, points: np.array) -> np.array:
         mask = (
-            (points[:, 0] >= -self.img_width//2 - 1) &
-            (points[:, 0] <  self.img_width//2) &
-            (points[:, 1] >= -self.img_width//2 - 1) &
-            (points[:, 1] <  self.img_width//2)
+                (points[:, 0] >= -self.img_width//2 - 1) &
+                (points[:, 0] <  self.img_width//2) &
+                (points[:, 1] >= -self.img_width//2 - 1) &
+                (points[:, 1] <  self.img_width//2)
         )
         return mask
 

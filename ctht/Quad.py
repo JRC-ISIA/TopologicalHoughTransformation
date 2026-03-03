@@ -97,7 +97,7 @@ class Quad(object):
         # work on setting neighbors or other properties if needed
         for q in quads:
             q.neighbors = [quad for quad in quads if quad != q]
-        
+
         # work on the neighbors inheritated from parent if needed
         for neighbor in self.neighbors[:]:
             # remove me from the neighbor's
@@ -112,7 +112,7 @@ class Quad(object):
                     q.add_neighbor(neighbor)
 
         return quads
-    
+
 
     def is_quad_neighbors(self, other):
         """Check if two quads are neighbors (share an edge)."""

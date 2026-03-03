@@ -38,11 +38,11 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=getattr(logging, args.log_level))
     os.makedirs(args.output_directory, exist_ok=True)
-    
+
     w1_distances, db_distances_pd, db_distances_img = [], [], []
 
     for sim_run in tqdm.tqdm(range(args.num_sim_rounds), desc="Simulation"):
-        
+
         # 1. Pre-calculate deltas
         w1_deltas_array = np.array(
             [generate_rand_y_delta() for _ in range(NUM_MOVE_POINTS)]
@@ -54,30 +54,30 @@ if __name__ == '__main__':
                                     intercept=args.line_1_intercept,
                                     num_points=min(args.n_point_line_1, args.image_width),
                                     noise_lvl=0)
-        
+
         # 3. Establish Baseline (State 0)
         base_image = generate_image(coordinates, args)
-        
-        
+
+
         hough_transformer = TopologicalHoughTransform(
-            base_image, 
-            value_threshold=150,  
+            base_image,
+            value_threshold=150,
             pers_limit=120,
             three_periods=True, normalize=False)
         pers_array_0 = hough_transformer.get_persistence_array()
-        
+
         line_points_0 = coordinates.copy()
         current_w1_accum = 0
 
         # 4. Iterative Move Loop
         for move_point_nb in range(NUM_MOVE_POINTS):
-            
+
             if move_point_nb > 0:
-                
+
                 valid_indices = [i for i, p in enumerate(coordinates) if p[1] == 120]
-                if not valid_indices: 
+                if not valid_indices:
                     valid_indices = range(len(coordinates))
-                
+
                 selected_point_idx = random.choice(valid_indices)
                 delta_y = w1_deltas_array[move_point_nb]
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
                 old_x, old_y = coordinates[selected_point_idx]
                 target_y = old_y + delta_y
                 clamped_y = int(max(0, min(target_y, args.image_height - 1)))
-                
+
                 # Update Accumulator with ACTUAL move
                 actual_delta = clamped_y - old_y
                 coordinates[selected_point_idx] = (old_x, clamped_y)
@@ -93,22 +93,22 @@ if __name__ == '__main__':
 
                 # Generate new image
                 image = generate_image(coordinates, args)
-                
-                
+
+
                 hough_transformer = TopologicalHoughTransform(
-                    image, 
+                    image,
                     value_threshold=150, # Restored to 150
                     pers_limit=120,
                     three_periods=True, normalize=False)
                 pers_array = hough_transformer.get_persistence_array()
-                
+
                 dgm1 = np.array(pers_array_0, dtype=np.float64)
                 dgm2 = np.array(pers_array, dtype=np.float64)
                 if len(dgm1) == 0: dgm1 = np.empty((0, 2))
                 if len(dgm2) == 0: dgm2 = np.empty((0, 2))
-                
+
                 dB_pd = gd.bottleneck_distance(dgm1, dgm2)
-                
+
                 dgm1_inp = np.array(line_points_0, dtype=np.float64)
                 dgm2_inp = np.array(coordinates, dtype=np.float64)
                 dB_img = gd.bottleneck_distance(dgm1_inp, dgm2_inp)
@@ -119,7 +119,7 @@ if __name__ == '__main__':
                 db_distances_img.append(dB_img)
 
     logging.info("Experiment Complete.")
-    
+
     df = pd.DataFrame({
         "W1 Image": w1_distances,
         "dB Pers": db_distances_pd,

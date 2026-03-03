@@ -173,12 +173,12 @@ class ContHT(BaseHT):
         return next_quads, final_quads
 
     def _get_function_value_at(self, theta, rho):
-            assert theta.shape[0] == rho.shape[0]
-            fct_values = np.zeros(theta.shape[0])
-            for p in self.points:
-                # point, theta, rho
-                fct_values += self._transform_point(p, theta, rho)
-            return fct_values
+        assert theta.shape[0] == rho.shape[0]
+        fct_values = np.zeros(theta.shape[0])
+        for p in self.points:
+            # point, theta, rho
+            fct_values += self._transform_point(p, theta, rho)
+        return fct_values
 
     def _transform_point(self, pt, desired_theta_rad, desired_rho):
         x, y = pt
@@ -327,7 +327,7 @@ if __name__ == '__main__':
             found = False
             for d_rho, d_theta in detected:
                 if abs(t_rho - d_rho) <= limit_rho and \
-                   abs(t_theta - d_theta) <= limit_theta:
+                        abs(t_theta - d_theta) <= limit_theta:
                     found = True
                     break
             results += [found]
