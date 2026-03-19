@@ -50,19 +50,21 @@ In case you think this project is useful for your work, please cite it as follow
 @online{ferner2025,
   title = {Persistence-Based {{Hough Transform}} for {{Line Detection}}},
   author = {Ferner, Johannes and Huber, Stefan and Messineo, Saverio and Pop, Angel and Uray, Martin},
+  booktitle = {Proc.\ of the 7th Int.\ Data Science Conference (iDSC 2025)},
   date = {2025-05-22},
-  eprint = {2504.16114},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
+  year = 2025,
+  month = may,
   doi = {10.48550/arXiv.2504.16114},
   url = {http://arxiv.org/abs/2504.16114},
 }
 
 @inproceedings{huber2026,
-  title={Topologically Stable Hough Transform},
-  author={Stefan Huber and Krist{\'o}f Husz{\'a}r and Michael Kerber and Martin Uray},
-  conference={26th European Workshop on Computational Geometry},
-  year={2026},
+  title = {Topologically Stable Hough Transform},
+  author = {Stefan Huber and Krist{\'o}f Husz{\'a}r and Michael Kerber and Martin Uray},
+  booktitle = {Proc.\ of the 42nd European Workshop on Computational Geometry (EuroCG 2026)},
+  year = {2026},
+  month = mar,
+  url = {https://arxiv.org/abs/2603.08245},
 }
 ```
 
